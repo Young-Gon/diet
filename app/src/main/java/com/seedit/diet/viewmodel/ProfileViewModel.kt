@@ -13,7 +13,6 @@ class ProfileViewModel(application: Application, private val profileDao: Profile
     val observable: LiveData<List<ProfileEntity>> = profileDao.findAll()
 
     fun insert(profile: ProfileEntity) {
-
         AppExecutors.diskIO.execute {
                 profileDao.insert(profile)
         }
@@ -26,7 +25,9 @@ class ProfileViewModel(application: Application, private val profileDao: Profile
             else ProfileEntity(0)
         }
 
-    fun setPorfile(profile: ProfileEntity)=
-            profileDao.insert(profile)
+    fun update()=observable.value?.let {
+        if(it.isNotEmpty())
+            insert(it[0])
 
+    }
 }

@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <data>
-        <variable
-            name="profile"
-            type="com.seedit.diet.database.entity.ProfileEntity"/>
-    </data>
-<ScrollView
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -49,6 +43,7 @@
             android:hint="Name"
             android:inputType="textPersonName"
             android:nextFocusDown="@id/editBirthday"
+            android:text="@{profile.name}"
             app:layout_constraintBottom_toBottomOf="@+id/profile_image"
             app:layout_constraintStart_toEndOf="@+id/profile_image"
             app:layout_constraintTop_toTopOf="@+id/profile_image"/>
@@ -88,6 +83,7 @@
             android:inputType="date"
             android:textSize="14sp"
             android:focusableInTouchMode="false"
+            android:nextFocusDown="@id/editHeight"
             app:layout_constraintStart_toEndOf="@+id/textView2"
             app:layout_constraintTop_toBottomOf="@+id/profile_image"/>
 
@@ -437,4 +433,3 @@
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
-</layout>

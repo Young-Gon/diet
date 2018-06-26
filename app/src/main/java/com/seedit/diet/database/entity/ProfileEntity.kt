@@ -11,12 +11,13 @@ data class ProfileEntity(
         val id: Long,
         var profile_image: Uri?=null,
         var name: String="",
-        var birthday: Date=Date(),
+        var gender:Int=0,
+        var birthday: Date=Date(0),
         var weight:Int=0,
         var height: Int=0,
         var targetWeight:Int=0,
         var targetWorkout:Int=0,
         var targetDiet:Int=0,
         var targetWater:Int=0,
-        var targetDday:Int=0
+        var targetDday:Date=Date(0)
         )
