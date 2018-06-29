@@ -24,3 +24,14 @@ object AppExecutors
         }
     }
 }
+
+/**
+ * Utility method to run blocks on a dedicated background thread, used for io/database work.
+ */
+fun ioThread(f : () -> Unit) {
+    AppExecutors.diskIO.execute(f)
+}
+
+fun mainThread(f: () -> Unit) {
+    AppExecutors.mainThread.execute(f)
+}

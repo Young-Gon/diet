@@ -1,5 +1,6 @@
 package com.seedit.diet
 
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -15,10 +16,13 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.gondev.clog.CLog
+import com.seedit.diet.database.repository.Repository
 import com.seedit.diet.fragment.BaseFragment
 import com.seedit.diet.fragment.DietFragment
 import com.seedit.diet.fragment.SummaryFragment
 import com.seedit.diet.fragment.WorkoutFragment
+import com.seedit.diet.viewmodel.ProfileViewModel
+import com.seedit.diet.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -26,6 +30,7 @@ import kotlinx.android.synthetic.main.content_main.*
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, BaseFragment.OnFragmentInteractionListener {
 
     private lateinit var mSectionsPagerAdapter: SectionsPagerAdapter
+    protected lateinit var viewModel: ProfileViewModel
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -50,7 +55,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        startActivity(Intent(this,MyInfoActivity::class.java))
+        val factory= ViewModelFactory(application, Repository.provideProfileDataSource(this))
+        viewModel= ViewModelProviders.of(this,factory).get(ProfileViewModel::class.java)
+        viewModel.observable.observe(this,android.arch.lifecycle.Observer {
+            if(it==null || it.size==0)
+                startActivity(Intent(this,MyInfoActivity::class.java))
+            else
+            {
+                // TODO 드로어 메뉴 프로필 초기화
+            }
+        })
+
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)

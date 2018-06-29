@@ -1,5 +1,6 @@
 package com.seedit.diet.fragment
 
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -10,9 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import com.gondev.clog.CLog
 import com.seedit.diat.util.SimpleAnimationListener
 import com.seedit.diet.R
+import com.seedit.diet.R.id.*
+import com.seedit.diet.database.repository.Repository
+import com.seedit.diet.viewmodel.ProfileViewModel
+import com.seedit.diet.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_base.*
 import kotlinx.android.synthetic.main.fragment_base.view.*
 import java.text.SimpleDateFormat
@@ -23,11 +27,21 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
     private val calendar=Calendar.getInstance()
     private var listener: OnFragmentInteractionListener? = null
     private val sdf=SimpleDateFormat("yyyy년 MM월 dd일")
+    protected lateinit var profileViewModel: ProfileViewModel
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        val factory= ViewModelFactory(activity?.application!!, Repository.provideProfileDataSource(context!!))
+        profileViewModel= ViewModelProviders.of(this,factory).get(ProfileViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
          inflater.inflate(R.layout.fragment_base, container, false).apply {
-             fragmentContainer.addView(inflater.inflate(getContentLayoutRes(), fragmentContainer, false))
+             val attachView=inflater.inflate(getContentLayoutRes(), fragmentContainer, false)
+             //onContentViewCreated(attachView,calendar)
+             fragmentContainer.addView(attachView)
          }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +62,6 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
 
     fun onClickPrev(v:View)
     {
-        CLog.d("clickPrev")
         calendar.add(Calendar.DATE, -1)
 
         txtDate.text = sdf.format(calendar.time)
@@ -56,13 +69,12 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
         val attachView=LayoutInflater.from(context).inflate(getContentLayoutRes(),fragmentContainer,false)
         val detachView=fragmentContainer.getChildAt(0)
         fragmentContainer.addView(attachView,0)
-        onContentViewCreated(attachView)
+        onContentViewCreated(attachView,calendar)
 
         val anim= AnimationUtils.loadAnimation(context,R.anim.slide_out_right)
         anim.setAnimationListener(object : SimpleAnimationListener() {
             override fun onAnimationEnd(animation: Animation?) {
                 fragmentContainer.removeView(detachView)
-
             }
         })
         detachView.startAnimation(anim)
@@ -79,7 +91,7 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
         val detachView=fragmentContainer.getChildAt(0)
         val attachView=LayoutInflater.from(context).inflate(getContentLayoutRes(),fragmentContainer,false)
         fragmentContainer.addView(attachView,0)
-        onContentViewCreated(attachView)
+        onContentViewCreated(attachView, calendar)
 
         val anim=AnimationUtils.loadAnimation(context,R.anim.slide_out_left)
         anim.setAnimationListener(object : SimpleAnimationListener() {
@@ -93,10 +105,12 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
         attachView.startAnimation(anim1)
     }
 
+    fun getAttachView() = fragmentContainer.getChildAt(0)
+
     @LayoutRes
     abstract fun getContentLayoutRes():Int
 
-    abstract fun onContentViewCreated(view: View)
+    abstract fun onContentViewCreated(view: View, calendar: Calendar)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

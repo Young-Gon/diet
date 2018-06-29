@@ -22,12 +22,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:label="내 프로필"
             android:name=".MyInfoActivity"
+            android:label="내 프로필"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".MainActivity"/>
+        </activity>
+        <activity android:name=".InsertDietActivity">
         </activity>
     </application>
 
