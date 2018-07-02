@@ -1,23 +1,20 @@
 package com.seedit.diet.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.View
-import com.gondev.clog.CLog
 import com.seedit.diet.R
 import com.seedit.diet.adapter.ArrayListRecyclerViewAdapter
 import com.seedit.diet.adapter.ViewBinder
 import com.seedit.diet.database.entity.DietEntity
 import com.seedit.diet.database.entity.RecommendWithDiet
-import com.seedit.diet.database.repository.Repository
-import com.seedit.diet.viewmodel.RecommendDietViewModel
+import com.seedit.diet.startDietActivity
+import com.seedit.diet.viewmodel.RecommendDietRelationshipViewModel
+import com.seedit.diet.viewmodel.viewModel
 import kotlinx.android.synthetic.main.fragment_diet.view.*
 import java.util.*
 
 class DietFragment:BaseFragment() {
-    private lateinit var recommendWithDiet: RecommendWithDiet
-    private lateinit var recommendDietViewModel: RecommendDietViewModel
+    private lateinit var viewModel: RecommendDietRelationshipViewModel
     private lateinit var adapter:ArrayListRecyclerViewAdapter<DietViewBinder,DietEntity>
 
     override fun getContentLayoutRes()=R.layout.fragment_diet
@@ -25,22 +22,35 @@ class DietFragment:BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val calendar=Calendar.getInstance()
-        val factory= RecommendDietViewModel.Factory(activity?.application!!, Repository.provideRecommendDataSource(context!!),calendar)
-        recommendDietViewModel= ViewModelProviders.of(this,factory).get(RecommendDietViewModel::class.java)
-        recommendDietViewModel.observe(this,Observer {
-            if(it==null || it.isEmpty())
-                recommendWithDiet = recommendDietViewModel.createNewData()
-            else
-                recommendWithDiet=it[0]
-
-            bindViewWithData(getAttachView(),recommendWithDiet)
-        })
-
-        recommendDietViewModel.observable.observe(this, Observer {
-            CLog.d("데이터 갱신")
-            it?.let { adapter.appendItem(it[0].dietList) }
-        })
+        viewModel=viewModel(RecommendDietRelationshipViewModel::class.java)
+	    viewModel.find(Calendar.getInstance())
+	    viewModel.setPageChangeListenerForRecommend(this,android.arch.lifecycle.Observer {
+		    // 페이지 변경시 이쪽으로 호출
+		    if(it==null || it.isEmpty()) {
+			    viewModel.createNewRecommendDiet(this,getCurrentCalender().time)
+		    }
+		    else
+		    {
+			    bindViewWithData(getAttachView(),it[0])
+		    }
+	    })
+	    viewModel.setPageChangeListenerForDiet(this,android.arch.lifecycle.Observer {
+		    // 데이터 변경시 이쪽으로 호출
+		    if(::adapter.isInitialized)
+		    {
+			    adapter.clear()
+			    if (it != null && it.isNotEmpty()) {
+				    adapter.addAll(it)
+				    adapter.notifyDataSetChanged()
+			    }
+		    }
+	    })
+	    viewModel.dietObserve(this,android.arch.lifecycle.Observer {
+		    if (it != null && it.isNotEmpty()) {
+			    if(::adapter.isInitialized)
+				    adapter.appendItem(it)
+		    }
+	    })
     }
 
     private fun bindViewWithData(attachView: View, recommendWithDiet: RecommendWithDiet) {
@@ -48,20 +58,21 @@ class DietFragment:BaseFragment() {
         attachView.recommendPicture.setImageResource(recommendWithDiet.recommendDiet.dietImageRes)
 
         attachView.txtRecommendContent.text=recommendWithDiet.recommendDiet.dietContent
-
-        adapter=ArrayListRecyclerViewAdapter(recommendWithDiet.dietList.toMutableList(),R.layout.item_diet,DietViewBinder::class)
-        attachView.recyclerView.adapter=adapter
     }
 
     override fun onContentViewCreated(view: View, calendar: Calendar) {
-        recommendDietViewModel.findByDate(calendar)
+	    if(::viewModel.isInitialized)
+	        viewModel.find(calendar)
 
-        view.fab.setOnClickListener {  }
+	    view.recommendPicture.clipToOutline=true
+        adapter=ArrayListRecyclerViewAdapter(R.layout.item_diet,DietViewBinder::class)
+        view.recyclerView.adapter=adapter
+
+        view.fab.setOnClickListener { it.context.startDietActivity() }
     }
 
     class DietViewBinder(itemView: View) : ViewBinder<DietEntity>(itemView) {
         override fun bind(item: DietEntity, position: Int) {
         }
-
     }
 }

@@ -22,8 +22,8 @@ import com.bumptech.glide.Glide
 import com.gondev.clog.CLog
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
+import com.seedit.diet.database.AppDatabase
 import com.seedit.diet.database.entity.ProfileEntity
-import com.seedit.diet.database.repository.Repository
 import com.seedit.diet.viewmodel.ProfileViewModel
 import com.seedit.diet.viewmodel.ViewModelFactory
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
@@ -40,14 +40,14 @@ class MyInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_myinfo)
 
-        val factory=ViewModelFactory(application,Repository.provideProfileDataSource(this))
+        val factory=ViewModelFactory(application, AppDatabase.getInstance(this))
         viewModel=ViewModelProviders.of(this,factory).get(ProfileViewModel::class.java)
         viewModel.observable.observe(this,android.arch.lifecycle.Observer {
             //TODO 화면 갱신
             CLog.i("화면 갱신 profile data size=${it?.size?:0}")
             it?.let {
                 if(it.isEmpty())
-                    viewModel.insert(ProfileEntity(0))
+                    viewModel.insert(if(BuildConfig.DEBUG) ProfileEntity(0,null,"test",0,Calendar.getInstance().apply { set(1980,10,17) }.time,80,170,60,400,300,2000,Calendar.getInstance().apply { set(2018,10,17) }.time) else ProfileEntity(0))
                 else
                 //if(it.isNotEmpty())
                 {

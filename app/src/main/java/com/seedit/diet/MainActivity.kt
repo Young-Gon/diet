@@ -16,7 +16,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.gondev.clog.CLog
-import com.seedit.diet.database.repository.Repository
+import com.seedit.diet.database.AppDatabase
 import com.seedit.diet.fragment.BaseFragment
 import com.seedit.diet.fragment.DietFragment
 import com.seedit.diet.fragment.SummaryFragment
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val factory= ViewModelFactory(application, Repository.provideProfileDataSource(this))
+        val factory= ViewModelFactory(application, AppDatabase.getInstance(this))
         viewModel= ViewModelProviders.of(this,factory).get(ProfileViewModel::class.java)
         viewModel.observable.observe(this,android.arch.lifecycle.Observer {
             if(it==null || it.size==0)

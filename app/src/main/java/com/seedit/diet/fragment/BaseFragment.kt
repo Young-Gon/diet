@@ -13,8 +13,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.seedit.diat.util.SimpleAnimationListener
 import com.seedit.diet.R
-import com.seedit.diet.R.id.*
-import com.seedit.diet.database.repository.Repository
+import com.seedit.diet.database.AppDatabase
 import com.seedit.diet.viewmodel.ProfileViewModel
 import com.seedit.diet.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_base.*
@@ -25,6 +24,8 @@ import java.util.*
 abstract class BaseFragment : Fragment(), View.OnClickListener {
 
     private val calendar=Calendar.getInstance()
+    fun getCurrentCalender()=calendar.clone() as Calendar
+
     private var listener: OnFragmentInteractionListener? = null
     private val sdf=SimpleDateFormat("yyyy년 MM월 dd일")
     protected lateinit var profileViewModel: ProfileViewModel
@@ -32,7 +33,7 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val factory= ViewModelFactory(activity?.application!!, Repository.provideProfileDataSource(context!!))
+        val factory= ViewModelFactory(activity?.application!!, AppDatabase.getInstance(context!!))
         profileViewModel= ViewModelProviders.of(this,factory).get(ProfileViewModel::class.java)
     }
 
@@ -40,7 +41,7 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
                               savedInstanceState: Bundle?): View? =
          inflater.inflate(R.layout.fragment_base, container, false).apply {
              val attachView=inflater.inflate(getContentLayoutRes(), fragmentContainer, false)
-             //onContentViewCreated(attachView,calendar)
+             onContentViewCreated(attachView,calendar)
              fragmentContainer.addView(attachView)
          }
 

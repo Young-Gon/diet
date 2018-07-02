@@ -13,7 +13,7 @@ interface DietDao {
     @Query("SELECT * FROM diet ")
     fun findAll():LiveData<List<DietEntity>>
 
-    @Query("SELECT * FROM diet WHERE createAt BETWEEN :from AND :to")
+    @Query("SELECT * FROM diet WHERE diet.createAt BETWEEN :from AND :to")
     fun findByDate(from: Date, to:Date):LiveData<List<DietEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
