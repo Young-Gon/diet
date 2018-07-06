@@ -43,7 +43,7 @@ class MyInfoActivity : AppCompatActivity() {
         val factory=ViewModelFactory(application, AppDatabase.getInstance(this))
         viewModel=ViewModelProviders.of(this,factory).get(ProfileViewModel::class.java)
         viewModel.observable.observe(this,android.arch.lifecycle.Observer {
-            //TODO 화면 갱신
+            // 화면 갱신
             CLog.i("화면 갱신 profile data size=${it?.size?:0}")
             it?.let {
                 if(it.isEmpty())

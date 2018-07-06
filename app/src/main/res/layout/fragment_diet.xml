@@ -37,6 +37,7 @@
                 android:id="@+id/recommendPicture"
                 android:layout_width="120dp"
                 android:layout_height="90dp"
+                android:scaleType="centerCrop"
                 android:background="@drawable/shape_round_rect_gray"/>
 
             <TextView

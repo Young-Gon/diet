@@ -68,7 +68,6 @@ public class KeyboardNumberPicker extends DialogFragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        setCancelable(false);
         setRetainInstance(true);
         super.onCreate(savedInstanceState);
 
@@ -170,8 +169,7 @@ public class KeyboardNumberPicker extends DialogFragment {
 		int colorPrimary = attributes.getColor(R.styleable.KeyboardNumberPicker_colorPrimary, ContextCompat.getColor(getContext(), android.R.color.transparent));
 		int titleTextColor = attributes.getColor(R.styleable.KeyboardNumberPicker_titleTextColor, ContextCompat.getColor(getContext(), android.R.color.transparent));
 
-
-        display = (TextView) keyboardNumberView.findViewById(R.id.rpolicante_dialog_picker_display);
+        display = keyboardNumberView.findViewById(R.id.rpolicante_dialog_picker_display);
         display.setBackgroundColor(knpDisplayBackgroundColor);
         display.setTextColor(knpDisplayTextColor);
 
@@ -181,13 +179,13 @@ public class KeyboardNumberPicker extends DialogFragment {
         display.setText(strValue);
 		strValue="";
 
-		TextView txtTitle= (TextView) keyboardNumberView.findViewById(R.id.txt_dialog_title);
+		TextView txtTitle= keyboardNumberView.findViewById(R.id.txt_dialog_title);
 		txtTitle.setBackgroundColor(colorPrimary);
 		txtTitle.setTextColor(titleTextColor);
 
         int knpBackspaceTintColor = attributes.getColor(R.styleable.KeyboardNumberPicker_knpBackspaceTintColor, ContextCompat.getColor(getContext(), android.R.color.secondary_text_light));
         int knpBackspaceBackgroundColor = attributes.getColor(R.styleable.KeyboardNumberPicker_knpBackspaceBackgroundColor, ContextCompat.getColor(getContext(), android.R.color.transparent));
-        backspace = (ImageView) keyboardNumberView.findViewById(R.id.rpolicante_dialog_picker_backspace);
+        backspace = keyboardNumberView.findViewById(R.id.rpolicante_dialog_picker_backspace);
         backspace.setColorFilter(knpBackspaceTintColor, PorterDuff.Mode.SRC_IN);
         backspace.getRootView().setBackgroundColor(knpBackspaceBackgroundColor);
         backspace.setOnClickListener(new View.OnClickListener() {
@@ -221,7 +219,7 @@ public class KeyboardNumberPicker extends DialogFragment {
         int knpKeysTextColor = attributes.getColor(R.styleable.KeyboardNumberPicker_knpKeysTextColor, ContextCompat.getColor(getContext(), android.R.color.secondary_text_light));
         int knpKeysBackgroundColor = attributes.getColor(R.styleable.KeyboardNumberPicker_knpKeysBackgroundColor, ContextCompat.getColor(getContext(), android.R.color.transparent));
 
-        GridLayout grid = (GridLayout) keyboardNumberView.findViewById(R.id.rpolicante_dialog_picker_grid);
+        GridLayout grid = keyboardNumberView.findViewById(R.id.rpolicante_dialog_picker_grid);
         int childCount = grid.getChildCount();
         for (int i = 0; i < childCount; i++) {
             if (grid.getChildAt(i) instanceof TextView) {

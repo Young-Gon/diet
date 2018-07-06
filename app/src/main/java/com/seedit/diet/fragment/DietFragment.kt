@@ -2,6 +2,8 @@ package com.seedit.diet.fragment
 
 import android.os.Bundle
 import android.view.View
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.seedit.diet.R
 import com.seedit.diet.adapter.ArrayListRecyclerViewAdapter
 import com.seedit.diet.adapter.ViewBinder
@@ -11,6 +13,7 @@ import com.seedit.diet.startDietActivity
 import com.seedit.diet.viewmodel.RecommendDietRelationshipViewModel
 import com.seedit.diet.viewmodel.viewModel
 import kotlinx.android.synthetic.main.fragment_diet.view.*
+import kotlinx.android.synthetic.main.item_diet.view.*
 import java.util.*
 
 class DietFragment:BaseFragment() {
@@ -72,7 +75,24 @@ class DietFragment:BaseFragment() {
     }
 
     class DietViewBinder(itemView: View) : ViewBinder<DietEntity>(itemView) {
-        override fun bind(item: DietEntity, position: Int) {
+        override fun bind(item: DietEntity, position: Int) =with(itemView){
+	        Glide.with(this)
+			        .load(item.picture)
+			        .thumbnail(0.1f)
+			        .apply(RequestOptions()
+					        .centerCrop()
+					        .placeholder(gun0912.tedbottompicker.R.drawable.ic_gallery)
+					        .error(R.drawable.if_apple))
+			        .into(imgFood)
+
+	        txtCategory.text=item.category.toString()
+	        txtContents.text=item.content
+	        txtTotalCalorie.text=String.format("총 %,dKcal",item.calorie.toInt())
         }
+
+	    override fun onClick(view: View?) {
+		    super.onClick(view)
+		    view?.context?.startDietActivity(item!!)
+	    }
     }
 }

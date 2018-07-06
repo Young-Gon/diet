@@ -29,6 +29,5 @@ class ProfileViewModel(application: Application,database: AppDatabase): AndroidV
     fun update()=observable.value?.let {
         if(it.isNotEmpty())
             insert(it[0])
-
     }
 }

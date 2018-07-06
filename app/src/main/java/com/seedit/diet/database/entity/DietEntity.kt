@@ -56,8 +56,11 @@ enum class DietCategoryEnum(val title:String) {
 	LAUNCH("점심"),
 	DINER("저녁"),
 	SNACK("간식"),
-	NIGHT_SNACK("야식"),
-}
+	NIGHT_SNACK("야식"),;
+
+	override fun toString(): String {
+		return title
+	}}
 
 fun convertDietCategoryToString() = DietCategoryEnum.values().map {
 	it.title

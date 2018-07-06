@@ -21,6 +21,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Filter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.gondev.clog.CLog
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
@@ -74,23 +75,17 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 				    dietEntity.calorie+=it.dietFood.foodCount*it.food.calorie
 				    dietEntity.content+="${it.food.name} ${it.dietFood.foodCount}개, "
 			    }
+			    dietEntity.content.let {
+				    dietEntity.content=it.removeRange(it.length-2 .. it.length-1)
+			    }
 
 			    foodViewModel.insert(dietEntity)
 			    updateDietEntity(dietEntity)
 		    }
 	    })
+	    setupHeaderView()
 
 	    updateDietEntity(dietEntity)
-	    //spinner
-	    spinnerDietCategory.adapter=ArrayAdapter(this,android.R.layout.simple_spinner_dropdown_item,convertDietCategoryToString())
-	    spinnerDietCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-		    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-			    dietEntity.category=DietCategoryEnum.values()[position]
-		    }
-
-		    override fun onNothingSelected(parent: AdapterView<*>?) {
-		    }
-	    }
 
 	    adapter=ArrayListRecyclerViewAdapter(R.layout.item_insert_food,InsertFoodViewBinder::class)
 	    recyclerView.adapter=adapter
@@ -124,6 +119,29 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 	    })
     }
 
+	fun setupHeaderView() {
+		Glide.with(this)
+				.load(dietEntity.picture)
+				.thumbnail(0.1f)
+				.apply (RequestOptions()
+						.centerCrop()
+						.error(R.drawable.if_pomegranate))
+				.into(imgFoodPicture)
+
+		//spinner
+		spinnerDietCategory.adapter=ArrayAdapter(this,android.R.layout.simple_spinner_dropdown_item,convertDietCategoryToString())
+		spinnerDietCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+				dietEntity.category=DietCategoryEnum.values()[position]
+			}
+
+			override fun onNothingSelected(parent: AdapterView<*>?) {
+			}
+		}
+
+		spinnerDietCategory.setSelection(dietEntity.category.ordinal)
+	}
+
 	fun updateDietEntity(dietEntity: DietEntity) {
 		// 화면에 총 칼로리 표시
 		txtTotalCal.text=String.format("총 칼로리: %,dKcal",dietEntity.calorie.toInt())
@@ -156,6 +174,10 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 					override fun onImageSelected(uri: Uri) {
 						Glide.with(this@InsertDietActivity)
 								.load(uri)
+								.thumbnail(0.1f)
+								.apply (RequestOptions()
+										.centerCrop()
+										.error(R.drawable.if_pomegranate))
 								.into(imgFoodPicture)
 
 						dietEntity.picture=uri
