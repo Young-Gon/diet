@@ -23,7 +23,8 @@ import java.util.*
 						RecommendDietEntity::class,
 						DietEntity::class,
 						RecommendDietRelationshipEntity::class,
-						FoodEntity::class],
+						FoodEntity::class,
+						DietFoodRelationEntity::class],
 		version = 1)
 abstract class AppDatabase : RoomDatabase()
 {
@@ -32,6 +33,7 @@ abstract class AppDatabase : RoomDatabase()
     abstract fun dietDao(): DietDao
 	abstract fun recommendDietRelationshipDao(): RecommendDietRelationshipDao
 	abstract fun foodDao():FoodDao
+	abstract fun dietFoodDao():DietFoodRelationDao
 
 	companion object
     {

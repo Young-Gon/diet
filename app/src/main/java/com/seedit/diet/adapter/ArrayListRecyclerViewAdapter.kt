@@ -13,16 +13,23 @@ open class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
         private val layoutRes: Int,
         private val vhClass: KClass<VH>
 ) : RecyclerView.Adapter<VH>(),
-        MutableList<ITEM> by itemList {
+        MutableList<ITEM> by itemList
+{
     constructor(@LayoutRes layoutRes: Int, vhClass: KClass<VH>) : this(mutableListOf(), layoutRes, vhClass)
 
     override fun getItemCount() = itemList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            vhClass.constructors.first().call(LayoutInflater.from(parent.context).inflate(this.layoutRes, parent, false))
+    LayoutInflater.from(parent.context).inflate(this.layoutRes, parent, false).let {view->
+        vhClass.constructors.first().call(view).also {viewHolder->
+            view.setOnClickListener(viewHolder)
+        }
+    }
 
     override fun onBindViewHolder(holder: VH, position: Int) =
-        holder.bind(itemList[position],position)
+        holder.bind(itemList[position],position).also {
+	        holder.item=itemList[position]
+        }
 
     fun appendItem(list: List<ITEM>) {
         val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {

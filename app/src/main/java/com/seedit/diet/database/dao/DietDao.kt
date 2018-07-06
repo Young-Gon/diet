@@ -17,5 +17,5 @@ interface DietDao {
     fun findByDate(from: Date, to:Date):LiveData<List<DietEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(diet: Array<DietEntity>)
+    fun insertAll(diet: Array<DietEntity>):List<Long>
 }

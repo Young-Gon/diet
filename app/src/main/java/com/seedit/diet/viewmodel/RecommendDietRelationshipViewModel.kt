@@ -7,8 +7,8 @@ import android.arch.persistence.room.Transaction
 import com.gondev.clog.CLog
 import com.seedit.diet.database.AppDatabase
 import com.seedit.diet.database.entity.DietEntity
+import com.seedit.diet.database.entity.RecommendDietEntity
 import com.seedit.diet.database.entity.RecommendDietRelationshipEntity
-import com.seedit.diet.database.entity.RecommendWithDiet
 import com.seedit.diet.util.ioThread
 import java.util.*
 
@@ -18,8 +18,8 @@ class RecommendDietRelationshipViewModel(application: Application,database: AppD
 	private val recommendDietDao=database.recommendDietDao()
 	private val recommendDietRelationshipDao=database.recommendDietRelationshipDao()
 
-	private lateinit var recommendObservable: LiveData<List<RecommendWithDiet>>
-	private var recommendMediatorLiveData = MediatorLiveData<List<RecommendWithDiet>>()
+	private lateinit var recommendObservable: LiveData<List<RecommendDietEntity>>
+	private var recommendMediatorLiveData = MediatorLiveData<List<RecommendDietEntity>>()
 
 	private lateinit var dietObservable: LiveData<List<DietEntity>>
 	private var dietMediatorLiveData = MediatorLiveData<List<DietEntity>>()
@@ -57,7 +57,7 @@ class RecommendDietRelationshipViewModel(application: Application,database: AppD
 				insertRecommendDiet(result)
 			}})
 
-	fun setPageChangeListenerForRecommend(owner: LifecycleOwner, observer: Observer<List<RecommendWithDiet>>) {
+	fun setPageChangeListenerForRecommend(owner: LifecycleOwner, observer: Observer<List<RecommendDietEntity>>) {
 		recommendMediatorLiveData.observe(owner, observer)
 	}
 
@@ -77,6 +77,6 @@ class RecommendDietRelationshipViewModel(application: Application,database: AppD
 
 	@Transaction
 	fun insertDiet(entity: DietEntity) = ioThread {
-		dietDao.insertAll(arrayOf(entity))
+		entity.id=dietDao.insertAll(arrayOf(entity))[0]
 	}
 }

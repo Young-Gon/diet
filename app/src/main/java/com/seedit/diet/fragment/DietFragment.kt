@@ -6,7 +6,7 @@ import com.seedit.diet.R
 import com.seedit.diet.adapter.ArrayListRecyclerViewAdapter
 import com.seedit.diet.adapter.ViewBinder
 import com.seedit.diet.database.entity.DietEntity
-import com.seedit.diet.database.entity.RecommendWithDiet
+import com.seedit.diet.database.entity.RecommendDietEntity
 import com.seedit.diet.startDietActivity
 import com.seedit.diet.viewmodel.RecommendDietRelationshipViewModel
 import com.seedit.diet.viewmodel.viewModel
@@ -53,11 +53,11 @@ class DietFragment:BaseFragment() {
 	    })
     }
 
-    private fun bindViewWithData(attachView: View, recommendWithDiet: RecommendWithDiet) {
+    private fun bindViewWithData(attachView: View, recommendWithDiet: RecommendDietEntity) {
         attachView.recommendPicture.clipToOutline=true
-        attachView.recommendPicture.setImageResource(recommendWithDiet.recommendDiet.dietImageRes)
+        attachView.recommendPicture.setImageResource(recommendWithDiet.dietImageRes)
 
-        attachView.txtRecommendContent.text=recommendWithDiet.recommendDiet.dietContent
+        attachView.txtRecommendContent.text=recommendWithDiet.dietContent
     }
 
     override fun onContentViewCreated(view: View, calendar: Calendar) {

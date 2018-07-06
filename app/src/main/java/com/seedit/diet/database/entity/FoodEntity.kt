@@ -8,5 +8,5 @@ data class FoodEntity(
 		val name:String,
 		val calorie:Float,
 		@PrimaryKey(autoGenerate = true)
-		val _id: Long=0
+		var _id: Long=0
 )

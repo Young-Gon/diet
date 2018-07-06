@@ -10,9 +10,10 @@ import java.util.*
 @Entity(tableName = "diet")
 data class DietEntity(
 		@PrimaryKey(autoGenerate = true)
-		val id: Long,
+		var id: Long,
 		var category: DietCategoryEnum=DietCategoryEnum.BREAKFAST,
 		var content: String="",
+		var calorie:Float=0f,
 		var picture: Uri?=null,
 		val createAt: Date=Date()) : Parcelable {
 
@@ -22,15 +23,17 @@ data class DietEntity(
 			parcel.readLong(),
 			DietCategoryEnum.values()[parcel.readInt()],
 			parcel.readString(),
+			parcel.readFloat(),
 			parcel.readParcelable(Uri::class.java.classLoader),
 			Date(parcel.readLong()))
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
+		parcel.writeLong(id)
 		parcel.writeInt(category.ordinal)
 		parcel.writeString(content)
+		parcel.writeFloat(calorie)
 		parcel.writeParcelable(picture, flags)
 		parcel.writeLong(createAt.time)
-		parcel.writeLong(id)
 	}
 
 	override fun describeContents(): Int {
@@ -54,4 +57,8 @@ enum class DietCategoryEnum(val title:String) {
 	DINER("저녁"),
 	SNACK("간식"),
 	NIGHT_SNACK("야식"),
+}
+
+fun convertDietCategoryToString() = DietCategoryEnum.values().map {
+	it.title
 }
