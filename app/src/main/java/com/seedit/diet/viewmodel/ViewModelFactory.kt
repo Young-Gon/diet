@@ -8,17 +8,18 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import com.seedit.diet.database.AppDatabase
 
-class ViewModelFactory(private val application: Application, private val database:AppDatabase) : ViewModelProvider.Factory  {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return modelClass.constructors.first().newInstance(application,database) as T
-    }
+class ViewModelFactory(private val application: Application, private val database:AppDatabase) : ViewModelProvider.Factory
+{
+    override fun <T : ViewModel> create(modelClass: Class<T>)=
+            modelClass.constructors.first().newInstance(application,database) as T
 }
 
-fun <T : ViewModel> FragmentActivity.viewModel(modelClass: Class<T>)= ViewModelFactory(application, AppDatabase.getInstance(this)).let {
+fun <T : ViewModel> FragmentActivity.viewModel(modelClass: Class<T>)=
+		ViewModelFactory(application, AppDatabase.getInstance(this)).let {
     ViewModelProviders.of(this,it).get(modelClass)
 }
 
-fun <T : ViewModel> Fragment.viewModel(modelClass: Class<T>)= ViewModelFactory(activity?.application!!, AppDatabase.getInstance(activity!!)).let {
+fun <T : ViewModel> Fragment.viewModel(modelClass: Class<T>)=
+		ViewModelFactory(activity?.application!!, AppDatabase.getInstance(context!!)).let {
 	ViewModelProviders.of(this,it).get(modelClass)
 }

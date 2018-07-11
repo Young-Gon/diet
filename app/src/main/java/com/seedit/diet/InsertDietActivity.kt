@@ -59,30 +59,27 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 
 	    foodViewModel=viewModel(FoodViewModel::class.java)
 	    foodViewModel.findDietFoodByDietID(dietEntity.id)
-	    foodViewModel.observe(this, Observer {
+	    foodViewModel.observe(this, Observer {it?.let {
 		    CLog.d("observed ${dietEntity.id}")
-		    if (it == null || it.isEmpty()) {
-			    if(dietEntity.id!=0L)
-				    foodViewModel.findDietFoodByDietID(dietEntity.id)
+		    adapter.appendItem(it)
+		    dietEntity.calorie=0f
+		    dietEntity.content=""
+		    it.forEach {
+			    dietEntity.calorie+=it.dietFood.foodCount*it.food.calorie
+			    dietEntity.content+="${it.food.name} ${it.dietFood.foodCount}개, "
 		    }
-		    else
+		    if(dietEntity.content.length>2)
 		    {
-			    adapter.appendItem(it)
-
-			    dietEntity.calorie=0f
-			    dietEntity.content=""
-			    it.forEach {
-				    dietEntity.calorie+=it.dietFood.foodCount*it.food.calorie
-				    dietEntity.content+="${it.food.name} ${it.dietFood.foodCount}개, "
-			    }
 			    dietEntity.content.let {
 				    dietEntity.content=it.removeRange(it.length-2 .. it.length-1)
 			    }
-
-			    foodViewModel.insert(dietEntity)
-			    updateDietEntity(dietEntity)
 		    }
-	    })
+
+		    if(dietEntity.id!=0L)
+		        foodViewModel.insert(dietEntity)
+
+		    updateDietEntity(dietEntity)
+	    }})
 	    setupHeaderView()
 
 	    updateDietEntity(dietEntity)
@@ -147,6 +144,10 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 		txtTotalCal.text=String.format("총 칼로리: %,dKcal",dietEntity.calorie.toInt())
 	}
 
+	override fun onDestroy() {
+		foodViewModel.checkIfDeleteItselfOrNot(dietEntity)
+		super.onDestroy()
+	}
 
 	fun onClickFoodImage(v: View?) {
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -233,7 +234,8 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 	override fun onCancelAction(numberPicker: KeyboardNumberPicker) {
 	}
 
-	override fun onDeleteAction(picker: KeyboardNumberPicker?) {
+	override fun onDeleteAction(numberPicker: KeyboardNumberPicker?) {
+		foodViewModel.delete((numberPicker?.item as DietWithFood).dietFood)
 	}
 
 	class InsertFoodViewBinder(itemView: View) : ViewBinder<DietWithFood>(itemView) {

@@ -8,7 +8,6 @@
         <attr name="knpBackgroundColor" format="color"/>
         <attr name="knpBackspaceTintColor" format="color"/>
         <attr name="knpBackspaceBackgroundColor" format="color"/>
-        <attr name="colorPrimary" format="color"/>
         <attr name="titleTextColor" format="color"/>
     </declare-styleable>
 </resources>

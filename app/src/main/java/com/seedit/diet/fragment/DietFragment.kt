@@ -27,7 +27,7 @@ class DietFragment:BaseFragment() {
 
         viewModel=viewModel(RecommendDietRelationshipViewModel::class.java)
 	    viewModel.find(Calendar.getInstance())
-	    viewModel.setPageChangeListenerForRecommend(this,android.arch.lifecycle.Observer {
+	    viewModel.observeForRecommend(this,android.arch.lifecycle.Observer {
 		    // 페이지 변경시 이쪽으로 호출
 		    if(it==null || it.isEmpty()) {
 			    viewModel.createNewRecommendDiet(this,getCurrentCalender().time)
@@ -37,23 +37,9 @@ class DietFragment:BaseFragment() {
 			    bindViewWithData(getAttachView(),it[0])
 		    }
 	    })
-	    viewModel.setPageChangeListenerForDiet(this,android.arch.lifecycle.Observer {
-		    // 데이터 변경시 이쪽으로 호출
-		    if(::adapter.isInitialized)
-		    {
-			    adapter.clear()
-			    if (it != null && it.isNotEmpty()) {
-				    adapter.addAll(it)
-				    adapter.notifyDataSetChanged()
-			    }
-		    }
-	    })
-	    viewModel.dietObserve(this,android.arch.lifecycle.Observer {
-		    if (it != null && it.isNotEmpty()) {
-			    if(::adapter.isInitialized)
-				    adapter.appendItem(it)
-		    }
-	    })
+	    viewModel.observeForDiet(this,android.arch.lifecycle.Observer {it?.let {
+		    adapter.appendItem(it)
+	    }})
     }
 
     private fun bindViewWithData(attachView: View, recommendWithDiet: RecommendDietEntity) {
@@ -64,9 +50,6 @@ class DietFragment:BaseFragment() {
     }
 
     override fun onContentViewCreated(view: View, calendar: Calendar) {
-	    if(::viewModel.isInitialized)
-	        viewModel.find(calendar)
-
 	    view.recommendPicture.clipToOutline=true
         adapter=ArrayListRecyclerViewAdapter(R.layout.item_diet,DietViewBinder::class)
         view.recyclerView.adapter=adapter

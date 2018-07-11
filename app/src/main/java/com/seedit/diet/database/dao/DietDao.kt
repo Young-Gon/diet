@@ -1,10 +1,7 @@
 package com.seedit.diet.database.dao
 
 import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import com.seedit.diet.database.entity.DietEntity
 import java.util.*
 
@@ -18,4 +15,7 @@ interface DietDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(diet: Array<DietEntity>):List<Long>
+
+	@Delete
+	fun delete(dietEntity: DietEntity)
 }

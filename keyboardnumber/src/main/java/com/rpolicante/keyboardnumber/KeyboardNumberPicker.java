@@ -166,7 +166,6 @@ public class KeyboardNumberPicker extends DialogFragment {
 
         int knpDisplayTextColor = attributes.getColor(R.styleable.KeyboardNumberPicker_knpDisplayTextColor, ContextCompat.getColor(getContext(), android.R.color.secondary_text_light));
         int knpDisplayBackgroundColor = attributes.getColor(R.styleable.KeyboardNumberPicker_knpDisplayBackgroundColor, ContextCompat.getColor(getContext(), android.R.color.transparent));
-		int colorPrimary = attributes.getColor(R.styleable.KeyboardNumberPicker_colorPrimary, ContextCompat.getColor(getContext(), android.R.color.transparent));
 		int titleTextColor = attributes.getColor(R.styleable.KeyboardNumberPicker_titleTextColor, ContextCompat.getColor(getContext(), android.R.color.transparent));
 
         display = keyboardNumberView.findViewById(R.id.rpolicante_dialog_picker_display);
@@ -180,7 +179,6 @@ public class KeyboardNumberPicker extends DialogFragment {
 		strValue="";
 
 		TextView txtTitle= keyboardNumberView.findViewById(R.id.txt_dialog_title);
-		txtTitle.setBackgroundColor(colorPrimary);
 		txtTitle.setTextColor(titleTextColor);
 
         int knpBackspaceTintColor = attributes.getColor(R.styleable.KeyboardNumberPicker_knpBackspaceTintColor, ContextCompat.getColor(getContext(), android.R.color.secondary_text_light));

@@ -3,6 +3,7 @@ package com.seedit.diet.viewmodel
 import android.app.Application
 import android.arch.lifecycle.*
 import android.arch.persistence.room.Transaction
+import android.database.sqlite.SQLiteConstraintException
 import com.gondev.clog.CLog
 import com.seedit.diet.database.AppDatabase
 import com.seedit.diet.database.entity.DietEntity
@@ -10,6 +11,7 @@ import com.seedit.diet.database.entity.DietFoodRelationEntity
 import com.seedit.diet.database.entity.DietWithFood
 import com.seedit.diet.database.entity.FoodEntity
 import com.seedit.diet.util.ioThread
+import com.seedit.diet.util.mainThread
 
 class FoodViewModel(application: Application,database: AppDatabase) : AndroidViewModel(application)
 {
@@ -42,20 +44,46 @@ class FoodViewModel(application: Application,database: AppDatabase) : AndroidVie
 	@Transaction
 	fun insertDietFoodRelationship(dietFoodEntity: DietFoodRelationEntity) = ioThread {
 		CLog.d(dietFoodEntity.toString())
-		dietFoodDao.insertAll(arrayOf(dietFoodEntity))
+
+		dietFoodDao.update(dietFoodEntity)
 	}
 
 	@Transaction
 	fun insertDietFoodRelationship(dietEntity: DietEntity, foodEntity: FoodEntity, count: Int)= ioThread {
-		if(dietEntity.id==0L)
-			dietEntity.id=dietDao.insertAll(arrayOf(dietEntity))[0]
+		if(dietEntity.id==0L) {
+
+
+			dietEntity.id = dietDao.insertAll(arrayOf(dietEntity))[0]
+			CLog.d("insert diet id=${dietEntity.id}")
+			mainThread {
+				findDietFoodByDietID(dietEntity.id)
+			}
+		}
 
 		CLog.d(dietEntity.toString())
-		dietFoodDao.insertAll(arrayOf(DietFoodRelationEntity(dietEntity.id,foodEntity._id,count)))
+		try {
+			dietFoodDao.insertAll(arrayOf(DietFoodRelationEntity(dietEntity.id,foodEntity._id,count)))
+		} catch (e: SQLiteConstraintException) {
+			dietFoodDao.update(dietEntity.id,foodEntity._id)
+		}
 	}
 
 	@Transaction
 	fun insert(dietEntity: DietEntity) = ioThread{
+		CLog.d("insert diet id=${dietEntity.id}")
 		dietDao.insertAll(arrayOf(dietEntity))
 	}
+
+	@Transaction
+	fun delete(dietFood: DietFoodRelationEntity) =ioThread{
+		dietFoodDao.delete(dietFood)
+	}
+
+	fun checkIfDeleteItselfOrNot(dietEntity: DietEntity) = with(observable.value){ ioThread{
+		if(this ==null || isEmpty())
+		{
+			if(dietEntity.id!=0L)
+				dietDao.delete(dietEntity)
+		}
+	}}
 }

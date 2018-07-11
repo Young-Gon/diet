@@ -1,10 +1,7 @@
 package com.seedit.diet.database.dao
 
 import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import com.seedit.diet.database.entity.DietFoodRelationEntity
 import com.seedit.diet.database.entity.DietWithFood
 
@@ -14,6 +11,16 @@ interface DietFoodRelationDao
 	@Query("SELECT * FROM dietfood, food WHERE  food._id=dietfood.foodId AND dietfood.dietId=:dietId")
 	fun findByDietID(dietId:Long):LiveData<List<DietWithFood>>
 
-	@Insert(onConflict = OnConflictStrategy.REPLACE)
+	@Insert(onConflict = OnConflictStrategy.FAIL)
 	fun insertAll(dietFoodRelationEntity: Array<DietFoodRelationEntity>)
+
+	//@Update(onConflict = OnConflictStrategy.REPLACE)
+	@Query("UPDATE dietfood SET foodCount=foodCount+1 WHERE dietId=:dietId AND foodId=:foodId")
+	fun update(dietId:Long,foodId:Long)
+
+	@Update
+	fun update(dietFoodRelationEntity: DietFoodRelationEntity)
+
+	@Delete
+	fun delete(dietFood: DietFoodRelationEntity)
 }

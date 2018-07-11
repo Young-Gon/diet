@@ -57,7 +57,7 @@ class RecommendDietRelationshipViewModel(application: Application,database: AppD
 				insertRecommendDiet(result)
 			}})
 
-	fun setPageChangeListenerForRecommend(owner: LifecycleOwner, observer: Observer<List<RecommendDietEntity>>) {
+	fun observeForRecommend(owner: LifecycleOwner, observer: Observer<List<RecommendDietEntity>>) {
 		recommendMediatorLiveData.observe(owner, observer)
 	}
 
@@ -67,13 +67,13 @@ class RecommendDietRelationshipViewModel(application: Application,database: AppD
 		recommendDietRelationshipDao.insert(entity)
 	}
 
-	fun setPageChangeListenerForDiet(owner: LifecycleOwner, observer: Observer<List<DietEntity>>) {
+	fun observeForDiet(owner: LifecycleOwner, observer: Observer<List<DietEntity>>) {
 		dietMediatorLiveData.observe(owner, observer)
 	}
 
-	fun dietObserve(owner: LifecycleOwner, observer: Observer<List<DietEntity>>) {
+	/*fun dietObserve(owner: LifecycleOwner, observer: Observer<List<DietEntity>>) {
 		dietObservable.observe(owner,observer)
-	}
+	}*/
 
 	@Transaction
 	fun insertDiet(entity: DietEntity) = ioThread {

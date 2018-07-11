@@ -1,17 +1,21 @@
 package com.seedit.diet.database.entity
 
-import android.arch.persistence.room.*
+import android.arch.persistence.room.Embedded
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.ForeignKey
+import android.arch.persistence.room.Index
 
 @Entity(tableName = "dietfood",
+		primaryKeys = ["dietId","foodId"],
 		indices = [Index(value = ["dietId"]),Index(value = ["foodId"])],
 		foreignKeys = [ForeignKey(entity = DietEntity::class, parentColumns = ["id"], childColumns = ["dietId"]),
 						ForeignKey(entity = FoodEntity::class, parentColumns = ["_id"], childColumns = ["foodId"])])
 data class DietFoodRelationEntity(
 		val dietId:Long,
 		val foodId:Long,
-		var foodCount:Int,
+		var foodCount:Int/*,
 		@PrimaryKey(autoGenerate = true)
-		val id: Long=0)
+		val id: Long=0*/)
 
 class DietWithFood {
 	@Embedded
