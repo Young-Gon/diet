@@ -92,7 +92,7 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
         val detachView=fragmentContainer.getChildAt(0)
         val attachView=LayoutInflater.from(context).inflate(getContentLayoutRes(),fragmentContainer,false)
         fragmentContainer.addView(attachView,0)
-        onContentViewCreated(attachView, calendar)
+        onContentViewCreated(attachView, calendar.clone() as Calendar)
 
         val anim=AnimationUtils.loadAnimation(context,R.anim.slide_out_left)
         anim.setAnimationListener(object : SimpleAnimationListener() {

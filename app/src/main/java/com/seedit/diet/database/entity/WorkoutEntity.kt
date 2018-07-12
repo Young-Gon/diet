@@ -7,21 +7,22 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.util.*
 
-@Entity(tableName = "diet")
-data class DietEntity(
+@Entity(tableName = "workout")
+data class WorkoutEntity (
 		@PrimaryKey(autoGenerate = true)
 		var id: Long,
-		var category: DietCategoryEnum=DietCategoryEnum.BREAKFAST,
+		var category: WorkoutCategoryEnum=WorkoutCategoryEnum.AEROBIC,
 		var content: String="",
 		var calorie:Float=0f,
 		var picture: Uri?=null,
-		val createAt: Date=Date()) : Parcelable
+		val createAt: Date = Date()
+) : Parcelable
 {
 	constructor(ids: Long=0):this(id=ids)
 
 	constructor(parcel: Parcel) : this(
 			parcel.readLong(),
-			DietCategoryEnum.values()[parcel.readInt()],
+			WorkoutCategoryEnum.values()[parcel.readInt()],
 			parcel.readString(),
 			parcel.readFloat(),
 			parcel.readParcelable(Uri::class.java.classLoader),
@@ -40,29 +41,26 @@ data class DietEntity(
 		return 0
 	}
 
-	companion object CREATOR : Parcelable.Creator<DietEntity> {
-		override fun createFromParcel(parcel: Parcel): DietEntity {
-			return DietEntity(parcel)
+	companion object CREATOR : Parcelable.Creator<WorkoutEntity> {
+		override fun createFromParcel(parcel: Parcel): WorkoutEntity {
+			return WorkoutEntity(parcel)
 		}
 
-		override fun newArray(size: Int): Array<DietEntity?> {
+		override fun newArray(size: Int): Array<WorkoutEntity?> {
 			return arrayOfNulls(size)
 		}
 	}
 }
 
-enum class DietCategoryEnum(val title:String) {
-	BREAKFAST("아침"),
-	LAUNCH("점심"),
-	DINER("저녁"),
-	SNACK("간식"),
-	NIGHT_SNACK("야식"),;
+enum class WorkoutCategoryEnum(val title: String){
+	AEROBIC("유산소"),
+	ANAEROBIC("무산소");
 
 	override fun toString(): String {
 		return title
 	}
 }
 
-fun convertDietCategoryToString() = DietCategoryEnum.values().map {
+fun convertWorkCategoryToString()=WorkoutCategoryEnum.values().map {
 	it.title
 }

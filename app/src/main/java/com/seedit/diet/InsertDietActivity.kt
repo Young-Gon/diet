@@ -31,7 +31,7 @@ import com.seedit.diet.adapter.ArrayListRecyclerViewAdapter
 import com.seedit.diet.adapter.ViewBinder
 import com.seedit.diet.database.entity.*
 import com.seedit.diet.viewmodel.FoodViewModel
-import com.seedit.diet.viewmodel.viewModel
+import com.seedit.diet.viewmodel.getViewModel
 import gun0912.tedbottompicker.TedBottomPicker
 import kotlinx.android.synthetic.main.activity_insert_diet.*
 import kotlinx.android.synthetic.main.alert_request_calorie.view.*
@@ -57,7 +57,7 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 
 	    dietEntity=intent.getParcelableExtra(INTENT_KEY_ENTITY)?:DietEntity()
 
-	    foodViewModel=viewModel(FoodViewModel::class.java)
+	    foodViewModel=getViewModel(FoodViewModel::class.java)
 	    foodViewModel.findDietFoodByDietID(dietEntity.id)
 	    foodViewModel.observe(this, Observer {it?.let {
 		    CLog.d("observed ${dietEntity.id}")
@@ -130,6 +130,7 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 		spinnerDietCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 				dietEntity.category=DietCategoryEnum.values()[position]
+				foodViewModel.insert(dietEntity)
 			}
 
 			override fun onNothingSelected(parent: AdapterView<*>?) {

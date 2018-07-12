@@ -14,12 +14,12 @@ class ViewModelFactory(private val application: Application, private val databas
             modelClass.constructors.first().newInstance(application,database) as T
 }
 
-fun <T : ViewModel> FragmentActivity.viewModel(modelClass: Class<T>)=
+fun <T : ViewModel> FragmentActivity.getViewModel(modelClass: Class<T>)=
 		ViewModelFactory(application, AppDatabase.getInstance(this)).let {
     ViewModelProviders.of(this,it).get(modelClass)
 }
 
-fun <T : ViewModel> Fragment.viewModel(modelClass: Class<T>)=
+fun <T : ViewModel> Fragment.getViewModel(modelClass: Class<T>)=
 		ViewModelFactory(activity?.application!!, AppDatabase.getInstance(context!!)).let {
 	ViewModelProviders.of(this,it).get(modelClass)
 }

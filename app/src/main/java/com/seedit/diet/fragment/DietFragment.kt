@@ -11,12 +11,13 @@ import com.seedit.diet.database.entity.DietEntity
 import com.seedit.diet.database.entity.RecommendDietEntity
 import com.seedit.diet.startDietActivity
 import com.seedit.diet.viewmodel.RecommendDietRelationshipViewModel
-import com.seedit.diet.viewmodel.viewModel
+import com.seedit.diet.viewmodel.getViewModel
 import kotlinx.android.synthetic.main.fragment_diet.view.*
 import kotlinx.android.synthetic.main.item_diet.view.*
 import java.util.*
 
-class DietFragment:BaseFragment() {
+class DietFragment:BaseFragment()
+{
     private lateinit var viewModel: RecommendDietRelationshipViewModel
     private lateinit var adapter:ArrayListRecyclerViewAdapter<DietViewBinder,DietEntity>
 
@@ -25,16 +26,16 @@ class DietFragment:BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel=viewModel(RecommendDietRelationshipViewModel::class.java)
+        viewModel=getViewModel(RecommendDietRelationshipViewModel::class.java)
 	    viewModel.find(Calendar.getInstance())
 	    viewModel.observeForRecommend(this,android.arch.lifecycle.Observer {
 		    // 페이지 변경시 이쪽으로 호출
 		    if(it==null || it.isEmpty()) {
-			    viewModel.createNewRecommendDiet(this,getCurrentCalender().time)
+			    viewModel.createNewRecommendDiet()
 		    }
 		    else
 		    {
-			    bindViewWithData(getAttachView(),it[0])
+			    bindViewWithData(it[0])
 		    }
 	    })
 	    viewModel.observeForDiet(this,android.arch.lifecycle.Observer {it?.let {
@@ -42,11 +43,11 @@ class DietFragment:BaseFragment() {
 	    }})
     }
 
-    private fun bindViewWithData(attachView: View, recommendWithDiet: RecommendDietEntity) {
-        attachView.recommendPicture.clipToOutline=true
-        attachView.recommendPicture.setImageResource(recommendWithDiet.dietImageRes)
+    private fun bindViewWithData(recommendWithDiet: RecommendDietEntity) = with(view!!){
+        recommendPicture.clipToOutline=true
+        recommendPicture.setImageResource(recommendWithDiet.dietImageRes)
 
-        attachView.txtRecommendContent.text=recommendWithDiet.dietContent
+        txtRecommendContent.text=recommendWithDiet.dietContent
     }
 
     override fun onContentViewCreated(view: View, calendar: Calendar) {

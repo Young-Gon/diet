@@ -32,20 +32,20 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:completionThreshold="1"
         android:queryHint="음식 검색"
         app:layout_constraintBottom_toBottomOf="@+id/imgFoodPicture"
         app:layout_constraintEnd_toEndOf="@+id/addFoodEntity"
-        app:layout_constraintStart_toStartOf="@+id/spinnerDietCategory"/>
+        app:layout_constraintStart_toEndOf="@+id/imageView"/>
 
     <ImageButton
         android:id="@+id/addFoodEntity"
         style="@style/Base.Widget.AppCompat.Button.Borderless"
         android:layout_width="60dp"
         android:layout_height="0dp"
-        android:src="@drawable/ic_chevron_right"
         android:onClick="onClickAddFood"
+        android:src="@drawable/ic_add"
+        android:tint="@color/defaultGray"
         app:layout_constraintBottom_toBottomOf="@+id/searchView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/searchView"/>
@@ -85,4 +85,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/spinnerDietCategory"
         tools:text="총 칼로리: 2,400Kcal"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/searchView"
+        app:layout_constraintStart_toStartOf="@+id/spinnerDietCategory"
+        app:layout_constraintTop_toTopOf="@+id/searchView"
+        app:srcCompat="@drawable/ic_search"/>
 </android.support.constraint.ConstraintLayout>

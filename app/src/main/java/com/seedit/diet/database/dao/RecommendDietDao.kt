@@ -1,6 +1,5 @@
 package com.seedit.diet.database.dao
 
-import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
@@ -11,7 +10,7 @@ import com.seedit.diet.database.entity.RecommendDietEntity
 interface RecommendDietDao
 {
     @Query("SELECT * FROM recommend_diet")
-    fun findAll(): LiveData<List<RecommendDietEntity>>
+    fun findAll(): List<RecommendDietEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(profile: Array<RecommendDietEntity>)

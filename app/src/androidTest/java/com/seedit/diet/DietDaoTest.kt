@@ -7,14 +7,12 @@ import android.support.test.espresso.matcher.ViewMatchers.assertThat
 import android.support.test.runner.AndroidJUnit4
 import com.gondev.clog.CLog
 import com.seedit.diet.database.AppDatabase
-import com.seedit.diet.database.dao.DietDao
-import com.seedit.diet.database.dao.DietFoodRelationDao
-import com.seedit.diet.database.dao.FoodDao
-import com.seedit.diet.database.dao.RecommendDietDao
+import com.seedit.diet.database.dao.*
 import com.seedit.diet.database.entity.DietCategoryEnum
 import com.seedit.diet.database.entity.DietEntity
 import com.seedit.diet.database.entity.DietFoodRelationEntity
-import org.hamcrest.Matchers.`is`
+import com.seedit.diet.database.entity.RecommendDietRelationshipEntity
+import org.hamcrest.CoreMatchers.`is`
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,6 +35,7 @@ class DietDaoTest
     private lateinit var dietDao: DietDao
 
     private lateinit var recommendDietDao: RecommendDietDao
+	private lateinit var recommendDietRelationshipDao: RecommendDietRelationshipDao
     private lateinit var dietFoodRelationDao: DietFoodRelationDao
 	private lateinit var foodDao: FoodDao
 
@@ -55,11 +54,12 @@ class DietDaoTest
         recommendDietDao=mDatabase.recommendDietDao()
 	    dietFoodRelationDao=mDatabase.dietFoodDao()
 	    foodDao=mDatabase.foodDao()
+	    recommendDietRelationshipDao=mDatabase.recommendDietRelationshipDao()
     }
 
     @Test
     fun useAppContext() {
-        recommendDietDao.insertAll(AppDatabase.getRecommendDietList())
+        /*recommendDietDao.insertAll(AppDatabase.getRecommendDietList())
 	    dietDao.insertAll(getDietList())
 	    foodDao.insertAll(AppDatabase.getFoodList())
 	    dietFoodRelationDao.insertAll(getDietFootList())
@@ -67,11 +67,19 @@ class DietDaoTest
 	    val diet = LiveDataTestUtil.getValue(dietFoodRelationDao.findByDietID(1))
 
 	    diet.forEach {
-		    //CLog.d("dietId=${it.diet[0].id}, foodId=${it.food[0]._id}, id=${it.dietFood.id}")
-		    CLog.d("dietId=${it.dietFood.id}, foodId=${it.food._id}")
 	    }
 
-        assertThat(diet.size, `is`(3))
+        assertThat(diet.size, `is`(3))*/
+	    recommendDietDao.insertAll(AppDatabase.getRecommendDietList())
+	    recommendDietDao.findAll().let{
+		    recommendDietRelationshipDao.insert(RecommendDietRelationshipEntity(it.shuffled()[0].id))
+	    }
+	    val diet = LiveDataTestUtil.getValue(recommendDietRelationshipDao.findAll())
+
+	    CLog.d("size=${diet.size}")
+	    diet.forEach {
+	    }
+	    assertThat(diet.size, `is`(3))
     }
 
     @After
@@ -83,9 +91,9 @@ class DietDaoTest
     companion object
     {
         fun getDietList()=arrayOf(
-                DietEntity(1,DietCategoryEnum.BREAKFAST,"오트밀 20g, 바나나 100g, 사과 125g, 우유 200ml",null),
-                DietEntity(2,DietCategoryEnum.LAUNCH,"현미밥 70g, 미역국 300g, 배추김치 50g, 가자미구이 50g",null),
-                DietEntity(3,DietCategoryEnum.DINER,"삶은 달걀 100g, 찐 고구마 200g, 닭가슴살 샐러드 100g",null)
+                DietEntity(1,DietCategoryEnum.BREAKFAST,"오트밀 20g, 바나나 100g, 사과 125g, 우유 200ml"),
+                DietEntity(2,DietCategoryEnum.LAUNCH,"현미밥 70g, 미역국 300g, 배추김치 50g, 가자미구이 50g"),
+                DietEntity(3,DietCategoryEnum.DINER,"삶은 달걀 100g, 찐 고구마 200g, 닭가슴살 샐러드 100g")
         )
 
 	    fun getDietFootList()= arrayOf(
