@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import kotlin.reflect.KClass
 
 open class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
-        private var itemList: MutableList<ITEM>,
+        itemList: MutableList<ITEM>,
         @LayoutRes
         private val layoutRes: Int,
         private val vhClass: KClass<VH>
@@ -17,7 +17,7 @@ open class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
 {
     constructor(@LayoutRes layoutRes: Int, vhClass: KClass<VH>) : this(mutableListOf(), layoutRes, vhClass)
 
-    override fun getItemCount() = itemList.size
+    override fun getItemCount() = size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
     LayoutInflater.from(parent.context).inflate(this.layoutRes, parent, false).let {view->
@@ -27,14 +27,14 @@ open class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) =
-        holder.bind(itemList[position],position).also {
-	        holder.item=itemList[position]
+        holder.bind(this[position],position).also {
+	        holder.item=this[position]
         }
 
     fun appendItem(list: List<ITEM>) {
         val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize(): Int {
-                return itemList.size
+                return size
             }
 
             override fun getNewListSize(): Int {
@@ -42,16 +42,18 @@ open class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
             }
 
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return itemList.get(oldItemPosition) === list.get(newItemPosition)
+                return get(oldItemPosition) === list.get(newItemPosition)
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                 val newProduct:ITEM = list.get(newItemPosition)
-                val oldProduct:ITEM = itemList.get(oldItemPosition)
+                val oldProduct:ITEM = get(oldItemPosition)
                 return newProduct?.equals(oldProduct)?:false
             }
         })
-        itemList = list.toMutableList()
+        clear()
+        addAll(list)
+
         result.dispatchUpdatesTo(this)
     }
 }

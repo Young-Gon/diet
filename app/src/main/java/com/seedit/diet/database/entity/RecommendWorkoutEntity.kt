@@ -5,9 +5,12 @@ import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "recommend_workout")
 data class RecommendWorkoutEntity(
-		val name:String,
+		override val name:String,
 		val content:String,
-		val imageRes: Int,
+		override val calorie:Float,
+		val imageRes: Int?,
 		@PrimaryKey(autoGenerate = true)
 		val id: Long=0
-)
+):SearchViewInfo {
+	override fun getSubInfo()="$calorie Kcal/30분"
+}

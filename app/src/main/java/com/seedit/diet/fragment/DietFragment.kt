@@ -1,9 +1,11 @@
 package com.seedit.diet.fragment
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.gondev.clog.CLog
 import com.seedit.diet.R
 import com.seedit.diet.adapter.ArrayListRecyclerViewAdapter
 import com.seedit.diet.adapter.ViewBinder
@@ -25,18 +27,23 @@ class DietFragment:BaseFragment()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+	    CLog.d("onActivityCreated")
 
         viewModel=getViewModel(RecommendDietRelationshipViewModel::class.java)
 	    viewModel.find(Calendar.getInstance())
-	    viewModel.observeForRecommend(this,android.arch.lifecycle.Observer {
+	    viewModel.observeForRecommend(this,Observer {
 		    // 페이지 변경시 이쪽으로 호출
 		    if(it==null || it.isEmpty()) {
-			    viewModel.createNewRecommendDiet()
+			    viewModel.createNewRecommendDiet(getCurrentCalender())
 		    }
 		    else
 		    {
 			    bindViewWithData(it[0])
 		    }
+
+		    /*it?.takeIf { it.isNotEmpty() }?.let {
+			    bindViewWithData(it[0])
+		    }?:viewModel.createNewRecommendDiet()*/
 	    })
 	    viewModel.observeForDiet(this,android.arch.lifecycle.Observer {it?.let {
 		    adapter.appendItem(it)
@@ -45,12 +52,20 @@ class DietFragment:BaseFragment()
 
     private fun bindViewWithData(recommendWithDiet: RecommendDietEntity) = with(view!!){
         recommendPicture.clipToOutline=true
-        recommendPicture.setImageResource(recommendWithDiet.dietImageRes)
+        //recommendPicture.setImageResource(recommendWithDiet.dietImageRes)
+	    Glide.with(this)
+			    .load(recommendWithDiet.dietImageRes)
+			    .thumbnail(0.1f)
+			    .into(recommendPicture)
 
         txtRecommendContent.text=recommendWithDiet.dietContent
     }
 
-    override fun onContentViewCreated(view: View, calendar: Calendar) {
+	override fun onContentViewCreated(view: View, calendar: Calendar) {
+	    CLog.d("onContentViewCreated")
+		if(::viewModel.isInitialized)
+			viewModel.find(calendar)
+
 	    view.recommendPicture.clipToOutline=true
         adapter=ArrayListRecyclerViewAdapter(R.layout.item_diet,DietViewBinder::class)
         view.recyclerView.adapter=adapter

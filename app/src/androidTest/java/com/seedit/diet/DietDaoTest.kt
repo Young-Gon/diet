@@ -74,7 +74,7 @@ class DietDaoTest
 	    recommendDietDao.findAll().let{
 		    recommendDietRelationshipDao.insert(RecommendDietRelationshipEntity(it.shuffled()[0].id))
 	    }
-	    val diet = LiveDataTestUtil.getValue(recommendDietRelationshipDao.findAll())
+	    val diet = getValue(recommendDietRelationshipDao.findAll())
 
 	    CLog.d("size=${diet.size}")
 	    diet.forEach {

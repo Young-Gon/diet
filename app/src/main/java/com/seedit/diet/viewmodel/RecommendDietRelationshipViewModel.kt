@@ -38,9 +38,9 @@ class RecommendDietRelationshipViewModel(application: Application,database: AppD
 	}
 
 	@Transaction
-	fun createNewRecommendDiet() = ioThread {
-		recommendDietDao.findAll().let{
-			recommendDietRelationshipDao.insert(RecommendDietRelationshipEntity(it.shuffled()[0].id))
+	fun createNewRecommendDiet(calendar: Calendar) = ioThread {
+		recommendDietDao.findOneByRandom().let {
+			recommendDietRelationshipDao.insert(RecommendDietRelationshipEntity(it.id,calendar.time))
 		}
 	}
 

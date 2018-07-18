@@ -5,6 +5,7 @@ import android.arch.lifecycle.*
 import android.arch.persistence.room.Transaction
 import android.database.sqlite.SQLiteConstraintException
 import com.gondev.clog.CLog
+import com.seedit.diet.adapter.DataSet
 import com.seedit.diet.database.AppDatabase
 import com.seedit.diet.database.entity.DietEntity
 import com.seedit.diet.database.entity.DietFoodRelationEntity
@@ -13,7 +14,7 @@ import com.seedit.diet.database.entity.FoodEntity
 import com.seedit.diet.util.ioThread
 import com.seedit.diet.util.mainThread
 
-class FoodViewModel(application: Application,database: AppDatabase) : AndroidViewModel(application)
+class FoodViewModel(application: Application,database: AppDatabase) : AndroidViewModel(application), DataSet<FoodEntity>
 {
 	private val dietDao=database.dietDao()
 	private val foodDao=database.foodDao()
@@ -21,7 +22,7 @@ class FoodViewModel(application: Application,database: AppDatabase) : AndroidVie
 	private lateinit var observable: LiveData<List<DietWithFood>>
 	private var mediatorLiveData = MediatorLiveData<List<DietWithFood>>()
 
-	fun findCursor(keyword: String) = foodDao.find(keyword)
+	override fun findCursor(keyword: String) = foodDao.find(keyword)
 
 	fun findDietFoodByDietID(dietID:Long)
 	{

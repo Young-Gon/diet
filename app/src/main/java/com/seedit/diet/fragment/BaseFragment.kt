@@ -41,7 +41,6 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
                               savedInstanceState: Bundle?): View? =
          inflater.inflate(R.layout.fragment_base, container, false).apply {
              val attachView=inflater.inflate(getContentLayoutRes(), fragmentContainer, false)
-             onContentViewCreated(attachView,calendar)
              fragmentContainer.addView(attachView)
          }
 
@@ -52,6 +51,7 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
         btnNext.setOnClickListener(this)
 
         txtDate.text = sdf.format(calendar.time)
+        onContentViewCreated(view,calendar)
     }
 
     override fun onClick(v: View) {

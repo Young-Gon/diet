@@ -7,8 +7,8 @@ import android.arch.persistence.room.Query
 import com.seedit.diet.database.entity.FoodEntity
 
 @Dao
-interface FoodDao {
-
+interface FoodDao
+{
 	@Query("SELECT * FROM food where name like :keyword")
 	fun find(keyword:String): List<FoodEntity>
 

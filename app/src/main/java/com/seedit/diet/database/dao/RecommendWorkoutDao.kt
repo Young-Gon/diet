@@ -14,4 +14,10 @@ interface RecommendWorkoutDao
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	fun insertAll(profile: Array<RecommendWorkoutEntity>)
+
+	@Query("SELECT * FROM recommend_workout ORDER BY RANDOM() LIMIT 1")
+	fun findOneByRandom(): RecommendWorkoutEntity
+
+	@Query("SELECT * FROM recommend_workout where name like :keyword")
+	fun find(keyword: String): List<RecommendWorkoutEntity>
 }

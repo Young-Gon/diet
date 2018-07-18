@@ -31,6 +31,7 @@ public class KeyboardNumberPicker extends DialogFragment {
     private static final String ARG_VALUE = KeyboardNumberPicker.class.getPackage() + ".ARG_VALUE";
     private static final String ARG_TITLE= KeyboardNumberPicker.class.getPackage() + ".ARG_TITLE";
     private static final String ARG_ITEM = KeyboardNumberPicker.class.getPackage() + ".ARG_ITEM";
+	private static final String ARG_DELETE_BUTTON = KeyboardNumberPicker.class.getPackage() + ".DELETE_BUTTON";
 
     private TextView display;
     private int theme = R.style.KeyboardNumberTheme;
@@ -38,12 +39,14 @@ public class KeyboardNumberPicker extends DialogFragment {
     private ImageView backspace;
     private AlertDialog keyboardDialog;
     private String strValue = "";
+	private boolean enableDeleteButton;
 
     private int tag;
 	private String itemName ="";
 	private String title="";
 
 	private Object item;
+
 	public KeyboardNumberPicker setItem(Object object)
 	{
 		item=object;
@@ -54,17 +57,23 @@ public class KeyboardNumberPicker extends DialogFragment {
 		return item;
 	}
 
-    private static KeyboardNumberPicker newInstance(int tag, int theme, Object o, String title, String item, String defaultValue) {
+    private static KeyboardNumberPicker newInstance(int tag, int theme, Object o, String title, String item, String defaultValue, boolean enableDeleteButton) {
         Bundle args = new Bundle();
         args.putInt(ARG_TAG, tag);
 		args.putInt(ARG_THEME, theme);
 		args.putString(ARG_TITLE, title);
 		args.putString(ARG_ITEM, item);
 		args.putString(ARG_VALUE, defaultValue);
+		args.putBoolean(ARG_DELETE_BUTTON, enableDeleteButton);
         KeyboardNumberPicker fragment = new KeyboardNumberPicker();
         fragment.setArguments(args);
         return fragment;
     }
+
+    public int getDialogTag()
+	{
+		return tag;
+	}
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,6 +113,7 @@ public class KeyboardNumberPicker extends DialogFragment {
 		outState.putString(ARG_TITLE, title);
 		outState.putString(ARG_ITEM, itemName);
         outState.putString(ARG_VALUE, strValue);
+		outState.putBoolean(ARG_DELETE_BUTTON, enableDeleteButton);
     }
 
     private void loadArguments(Bundle bundle){
@@ -114,6 +124,7 @@ public class KeyboardNumberPicker extends DialogFragment {
 		title = bundle.getString(ARG_TITLE,"");
 		itemName = bundle.getString(ARG_ITEM,"");
 		strValue = bundle.getString(ARG_VALUE,"0");
+		enableDeleteButton = bundle.getBoolean(ARG_DELETE_BUTTON, false);
     }
 
     private void createDialog() {
@@ -122,30 +133,24 @@ public class KeyboardNumberPicker extends DialogFragment {
 		((TextView)keyboardNumberView.findViewById(R.id.txt_dialog_title)).setText(title);
 		((TextView)keyboardNumberView.findViewById(R.id.txt_item)).setText(itemName);
 
-        keyboardDialog = new AlertDialog.Builder(getContext(), theme)
-                .setView(keyboardNumberView)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), theme)
+				.setView(keyboardNumberView)
+				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+					{
 
-                        KeyboardNumberPickerHandler handler = getImplementsHandlerListener();
-                        if (handler != null){
-                            handler.onConfirmAction(KeyboardNumberPicker.this, strValue);
-                        }
-                        dismiss();
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        KeyboardNumberPickerHandler handler = getImplementsHandlerListener();
-                        if (handler != null){
-                            handler.onCancelAction(KeyboardNumberPicker.this);
-                        }
-                        dismiss();
-                    }
-                })
-				.setNeutralButton("삭제", new DialogInterface.OnClickListener()
+						KeyboardNumberPickerHandler handler = getImplementsHandlerListener();
+						if (handler != null)
+						{
+							strValue = display.getText().toString();
+							handler.onConfirmAction(KeyboardNumberPicker.this, strValue);
+						}
+						dismiss();
+					}
+				})
+				.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
 				{
 					@Override
 					public void onClick(DialogInterface dialog, int which)
@@ -153,11 +158,27 @@ public class KeyboardNumberPicker extends DialogFragment {
 						KeyboardNumberPickerHandler handler = getImplementsHandlerListener();
 						if (handler != null)
 						{
-							handler.onDeleteAction(KeyboardNumberPicker.this);
+							handler.onCancelAction(KeyboardNumberPicker.this);
 						}
+						dismiss();
 					}
-				})
-                .create();
+				});
+
+		if(enableDeleteButton)
+			builder.setNeutralButton("삭제", new DialogInterface.OnClickListener()
+					{
+						@Override
+						public void onClick(DialogInterface dialog, int which)
+						{
+							KeyboardNumberPickerHandler handler = getImplementsHandlerListener();
+							if (handler != null)
+							{
+								handler.onDeleteAction(KeyboardNumberPicker.this);
+							}
+						}
+					});
+
+		keyboardDialog =builder.create();
     }
 
     private void setup(Bundle args) {
@@ -332,6 +353,7 @@ public class KeyboardNumberPicker extends DialogFragment {
 		private String title="";
 		private String itemName ="";
 		private String defaultValue="0";
+		private boolean enableDeleteButton=false;
 		private int theme=R.style.KeyboardNumberTheme;
 		private Object item;
 
@@ -370,8 +392,14 @@ public class KeyboardNumberPicker extends DialogFragment {
 		}
 
 		public KeyboardNumberPicker create() {
-            return newInstance(tag, theme, item, title, itemName, defaultValue);
+            return newInstance(tag, theme, item, title, itemName, defaultValue,enableDeleteButton);
         }
-    }
+
+		public Builder setEnableDeleteButton()
+		{
+			enableDeleteButton=true;
+			return this;
+		}
+	}
 
 }

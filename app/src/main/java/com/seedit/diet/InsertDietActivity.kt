@@ -1,7 +1,6 @@
 package com.seedit.diet
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
@@ -16,10 +15,8 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Filter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gondev.clog.CLog
@@ -28,6 +25,7 @@ import com.gun0912.tedpermission.TedPermission
 import com.rpolicante.keyboardnumber.KeyboardNumberPicker
 import com.rpolicante.keyboardnumber.KeyboardNumberPickerHandler
 import com.seedit.diet.adapter.ArrayListRecyclerViewAdapter
+import com.seedit.diet.adapter.SearchViewAdapter
 import com.seedit.diet.adapter.ViewBinder
 import com.seedit.diet.database.entity.*
 import com.seedit.diet.viewmodel.FoodViewModel
@@ -36,7 +34,6 @@ import gun0912.tedbottompicker.TedBottomPicker
 import kotlinx.android.synthetic.main.activity_insert_diet.*
 import kotlinx.android.synthetic.main.alert_request_calorie.view.*
 import kotlinx.android.synthetic.main.item_insert_food.view.*
-import kotlinx.android.synthetic.main.item_searchview_popup.view.*
 
 
 fun Context.startDietActivity(dietEntity: DietEntity=DietEntity()) =
@@ -192,11 +189,11 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 
 	}
 
-	fun onClickAddFood(v: View?) = (searchView.tag as FoodEntity?).let {
+	fun onClickAddFood(v: View?) = (searchView.tag as FoodEntity).let {
 		if (searchView.length()==0)
 			return@let
 
-		if(it==null || it.name != searchView.text.toString())
+		if(it.name != searchView.text.toString())
 		{
 			val view=LayoutInflater.from(this).inflate(R.layout.alert_request_calorie,null)
 			view.foodName.text=searchView.text
@@ -254,77 +251,10 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 					.setTitle("수량을 입력하세요")
 					.setItemName(item?.food?.name)
 					.setDefaultValue(item?.dietFood?.foodCount.toString())
+					.setEnableDeleteButton()
 					.create()
 					.setItem(item)
-					.show((view?.context as InsertDietActivity).supportFragmentManager, "TAG")
-		}
-	}
-
-	class SearchViewAdapter(context: Context?,val resource: Int, foodViewModel: FoodViewModel, var dataList: List<FoodEntity> = listOf()) : ArrayAdapter<FoodEntity>(context, resource, dataList)
-	{
-		private val listFilter = SearchViewAdapter.ListFilter(this,foodViewModel)
-
-		@SuppressLint("ViewHolder")
-		override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-			return LayoutInflater.from(parent?.context).inflate(resource,parent,false).apply {
-				getItem(position)?.let {
-					txtName.text= it.name
-					calorie.text= it.calorie.toString()+" Kcal"
-				}
-			}
-		}
-
-		override fun getCount(): Int {
-			return dataList.size
-		}
-
-		override fun getItem(position: Int): FoodEntity? {
-			return dataList.get(position)
-		}
-
-		override fun getFilter(): Filter {
-			return listFilter
-		}
-
-		private fun publishResults(results: ArrayList<FoodEntity>, count: Int) {
-			dataList = results
-			CLog.d(dataList.toString())
-			if (count > 0) {
-				notifyDataSetChanged()
-			} else {
-				notifyDataSetInvalidated()
-			}
-		}
-
-		class ListFilter(val adapter: SearchViewAdapter,val foodViewModel: FoodViewModel) : Filter() {
-			private val lock = Any()
-
-			override fun performFiltering(prefix: CharSequence?): Filter.FilterResults {
-				val results = Filter.FilterResults()
-
-				if (prefix == null || prefix.length == 0) {
-					synchronized(lock) {
-						results.values = ArrayList<String>()
-						results.count = 0
-					}
-				} else {
-					val searchStrLowerCase = prefix.toString().toLowerCase()+"%"
-
-					CLog.d(searchStrLowerCase)
-					//Call to database to get matching records using room
-					val matchValues = foodViewModel.findCursor(searchStrLowerCase)
-
-					CLog.d(matchValues.toString())
-					results.values = matchValues
-					results.count = matchValues.size
-				}
-
-				return results
-			}
-
-			override fun publishResults(constraint: CharSequence?, results: Filter.FilterResults) {
-				adapter.publishResults(results.values as ArrayList<FoodEntity>,results.count)
-			}
+					.show((view?.context as AppCompatActivity).supportFragmentManager, "TAG")
 		}
 	}
 }
