@@ -77,7 +77,7 @@ class WorkoutFragment:BaseFragment()
 							.error(R.drawable.if_apple))
 					.into(imgFood)
 
-			txtCategory.text=item.category.toString()
+			txtCategory.text=item.title
 			txtContents.text=item.content
 			txtTotalCalorie.text=String.format("총 %,dKcal",item.calorie.toInt())
 		}

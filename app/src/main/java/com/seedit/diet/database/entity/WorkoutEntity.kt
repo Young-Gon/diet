@@ -11,7 +11,7 @@ import java.util.*
 data class WorkoutEntity (
 		@PrimaryKey(autoGenerate = true)
 		var id: Long,
-		var category: WorkoutCategoryEnum=WorkoutCategoryEnum.AEROBIC,
+		var title: String="",
 		var content: String="",
 		var calorie:Float=0f,
 		var picture: Uri?=null,
@@ -22,7 +22,7 @@ data class WorkoutEntity (
 
 	constructor(parcel: Parcel) : this(
 			parcel.readLong(),
-			WorkoutCategoryEnum.values()[parcel.readInt()],
+			parcel.readString(),
 			parcel.readString(),
 			parcel.readFloat(),
 			parcel.readParcelable(Uri::class.java.classLoader),
@@ -30,7 +30,7 @@ data class WorkoutEntity (
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		parcel.writeLong(id)
-		parcel.writeInt(category.ordinal)
+		parcel.writeString(title)
 		parcel.writeString(content)
 		parcel.writeFloat(calorie)
 		parcel.writeParcelable(picture, flags)
@@ -50,17 +50,4 @@ data class WorkoutEntity (
 			return arrayOfNulls(size)
 		}
 	}
-}
-
-enum class WorkoutCategoryEnum(val title: String){
-	AEROBIC("유산소"),
-	ANAEROBIC("무산소");
-
-	override fun toString(): String {
-		return title
-	}
-}
-
-fun convertWorkCategoryToString()=WorkoutCategoryEnum.values().map {
-	it.title
 }

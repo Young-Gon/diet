@@ -54,35 +54,17 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 
 	    dietEntity=intent.getParcelableExtra(INTENT_KEY_ENTITY)?:DietEntity()
 
+	    adapter=ArrayListRecyclerViewAdapter(R.layout.item_insert_food,InsertFoodViewBinder::class)
+	    recyclerView.adapter=adapter
+
 	    foodViewModel=getViewModel(FoodViewModel::class.java)
 	    foodViewModel.findDietFoodByDietID(dietEntity.id)
 	    foodViewModel.observe(this, Observer {it?.let {
-		    CLog.d("observed ${dietEntity.id}")
 		    adapter.appendItem(it)
-		    dietEntity.calorie=0f
-		    dietEntity.content=""
-		    it.forEach {
-			    dietEntity.calorie+=it.dietFood.foodCount*it.food.calorie
-			    dietEntity.content+="${it.food.name} ${it.dietFood.foodCount}개, "
-		    }
-		    if(dietEntity.content.length>2)
-		    {
-			    dietEntity.content.let {
-				    dietEntity.content=it.removeRange(it.length-2 .. it.length-1)
-			    }
-		    }
-
-		    if(dietEntity.id!=0L)
-		        foodViewModel.insert(dietEntity)
-
-		    updateDietEntity(dietEntity)
 	    }})
 	    setupHeaderView()
 
 	    updateDietEntity(dietEntity)
-
-	    adapter=ArrayListRecyclerViewAdapter(R.layout.item_insert_food,InsertFoodViewBinder::class)
-	    recyclerView.adapter=adapter
 
 	    addFoodEntity.isClickable=false
 	    addFoodEntity.isEnabled=false
@@ -127,7 +109,6 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 		spinnerDietCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 			override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 				dietEntity.category=DietCategoryEnum.values()[position]
-				foodViewModel.insert(dietEntity)
 			}
 
 			override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -180,7 +161,6 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 								.into(imgFoodPicture)
 
 						dietEntity.picture=uri
-						foodViewModel.insert(dietEntity)
 					}
 				})
 				.create()
@@ -215,7 +195,21 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 
 	fun addToList(item: FoodEntity) {
 		searchView.setText("")
-		foodViewModel.insertDietFoodRelationship(dietEntity,item,1)
+		//foodViewModel.insertDietFoodRelationship(dietEntity,item,1)
+		DietWithFood(DietFoodRelationEntity(dietEntity.id,item._id,1),item).apply {
+			adapter.indexOf(this).let {index->
+				if(index==-1)
+				{
+					adapter.add(this)
+					adapter.notifyItemInserted(adapter.size-1)
+				}
+				else
+				{
+					adapter[index].dietFood.foodCount+=1
+					adapter.notifyItemChanged(index)
+				}
+			}
+		}
 	}
 
 	override fun onConfirmAction(numberPicker: KeyboardNumberPicker?, value: String?){

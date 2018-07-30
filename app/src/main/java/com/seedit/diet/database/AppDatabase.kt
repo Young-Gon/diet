@@ -11,7 +11,6 @@ import com.seedit.diet.R
 import com.seedit.diet.database.converter.DateConverter
 import com.seedit.diet.database.converter.DietCategoryConverter
 import com.seedit.diet.database.converter.UriConverter
-import com.seedit.diet.database.converter.WorkoutCategoryConverter
 import com.seedit.diet.database.dao.*
 import com.seedit.diet.database.entity.*
 import com.seedit.diet.util.ioThread
@@ -19,8 +18,7 @@ import java.util.*
 
 @TypeConverters(DateConverter::class,
 		UriConverter::class,
-		DietCategoryConverter::class,
-		WorkoutCategoryConverter::class)
+		DietCategoryConverter::class)
 @Database(entities = [ProfileEntity::class,
 						RecommendDietEntity::class,
 						DietEntity::class,

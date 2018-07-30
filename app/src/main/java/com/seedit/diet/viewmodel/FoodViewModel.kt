@@ -52,8 +52,6 @@ class FoodViewModel(application: Application,database: AppDatabase) : AndroidVie
 	@Transaction
 	fun insertDietFoodRelationship(dietEntity: DietEntity, foodEntity: FoodEntity, count: Int)= ioThread {
 		if(dietEntity.id==0L) {
-
-
 			dietEntity.id = dietDao.insertAll(arrayOf(dietEntity))[0]
 			CLog.d("insert diet id=${dietEntity.id}")
 			mainThread {

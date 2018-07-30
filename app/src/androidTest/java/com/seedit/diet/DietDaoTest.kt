@@ -11,7 +11,6 @@ import com.seedit.diet.database.dao.*
 import com.seedit.diet.database.entity.DietCategoryEnum
 import com.seedit.diet.database.entity.DietEntity
 import com.seedit.diet.database.entity.DietFoodRelationEntity
-import com.seedit.diet.database.entity.RecommendDietRelationshipEntity
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.After
 import org.junit.Before
@@ -71,9 +70,6 @@ class DietDaoTest
 
         assertThat(diet.size, `is`(3))*/
 	    recommendDietDao.insertAll(AppDatabase.getRecommendDietList())
-	    recommendDietDao.findAll().let{
-		    recommendDietRelationshipDao.insert(RecommendDietRelationshipEntity(it.shuffled()[0].id))
-	    }
 	    val diet = getValue(recommendDietRelationshipDao.findAll())
 
 	    CLog.d("size=${diet.size}")

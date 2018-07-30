@@ -17,10 +17,32 @@ data class DietFoodRelationEntity(
 		@PrimaryKey(autoGenerate = true)
 		val id: Long=0*/)
 
-class DietWithFood {
+data class DietWithFood(
+		@Embedded
+		var dietFood: DietFoodRelationEntity,
+		@Embedded
+		var food: FoodEntity
+)
+{
+	override fun equals(other: Any?): Boolean {
+		if(other==null || other !is DietWithFood)
+			return false
+
+		return other.dietFood.dietId==dietFood.dietId &&
+				other.food._id==food._id
+	}
+
+	override fun hashCode(): Int {
+		var result = dietFood.hashCode()
+		result = 31 * result + food.hashCode()
+		return result
+	}
+}
+/*
+{
 	@Embedded
 	lateinit var dietFood: DietFoodRelationEntity
 
 	@Embedded
 	lateinit var food: FoodEntity
-}
+}*/

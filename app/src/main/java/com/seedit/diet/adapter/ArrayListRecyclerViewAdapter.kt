@@ -5,9 +5,11 @@ import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.seedit.diet.util.ioThread
+import com.seedit.diet.util.mainThread
 import kotlin.reflect.KClass
 
-open class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
+class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
         itemList: MutableList<ITEM>,
         @LayoutRes
         private val layoutRes: Int,
@@ -31,7 +33,7 @@ open class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
 	        holder.item=this[position]
         }
 
-    fun appendItem(list: List<ITEM>) {
+    fun appendItem(list: List<ITEM>)= ioThread {
         val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize(): Int {
                 return size
@@ -46,14 +48,16 @@ open class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                val newProduct:ITEM = list.get(newItemPosition)
-                val oldProduct:ITEM = get(oldItemPosition)
+                val newProduct = list.get(newItemPosition)
+                val oldProduct = get(oldItemPosition)
                 return newProduct?.equals(oldProduct)?:false
             }
         })
         clear()
         addAll(list)
 
-        result.dispatchUpdatesTo(this)
+        mainThread {
+            result.dispatchUpdatesTo(this)
+        }
     }
 }
