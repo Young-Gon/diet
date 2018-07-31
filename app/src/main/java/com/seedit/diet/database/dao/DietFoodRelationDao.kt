@@ -12,7 +12,7 @@ interface DietFoodRelationDao
 	fun findByDietID(dietId:Long):LiveData<List<DietWithFood>>
 
 	@Insert(onConflict = OnConflictStrategy.FAIL)
-	fun insertAll(dietFoodRelationEntity: Array<DietFoodRelationEntity>)
+	fun insertAll(dietFoodRelationEntity: List<DietFoodRelationEntity>)
 
 	//@Update(onConflict = OnConflictStrategy.REPLACE)
 	@Query("UPDATE dietfood SET foodCount=foodCount+1 WHERE dietId=:dietId AND foodId=:foodId")
@@ -21,6 +21,6 @@ interface DietFoodRelationDao
 	@Update
 	fun update(dietFoodRelationEntity: DietFoodRelationEntity)
 
-	@Delete
-	fun delete(dietFood: DietFoodRelationEntity)
+	/*@Delete
+	fun delete(dietFood: DietFoodRelationEntity)*/
 }

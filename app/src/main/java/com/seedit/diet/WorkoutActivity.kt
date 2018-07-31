@@ -103,7 +103,7 @@ class WorkoutActivity : AppCompatActivity(), KeyboardNumberPickerHandler {
 				workoutViewModel.delete(workEntity)
 		}
 		else {
-			workEntity.title=editWorkoutName.text.toString()
+			workEntity.title=if(editWorkoutName.text.length==0)"오늘의 운동" else editWorkoutName.text.toString()
 			workoutViewModel.insert(workEntity, adapter)
 		}
 
@@ -112,8 +112,14 @@ class WorkoutActivity : AppCompatActivity(), KeyboardNumberPickerHandler {
 
 	private fun calTotalCalorie()
 	{
-		workEntity.calorie = adapter.fold(0f) { count,item->
-			count+item.recommendWorkoutEntity.calorie*item.relationship.time/30
+		workEntity.content=""
+		workEntity.calorie=0f
+		adapter.forEachIndexed{index,item->
+			workEntity.content+="${item.recommendWorkoutEntity.name} ${item.relationship.time} 분"
+			if(index+1<adapter.size)
+				workEntity.content+=", "
+
+			workEntity.calorie+=item.recommendWorkoutEntity.calorie*item.relationship.time/30
 		}
 		updateWorkoutEntity()
 	}

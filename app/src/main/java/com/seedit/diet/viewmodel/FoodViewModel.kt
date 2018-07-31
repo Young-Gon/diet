@@ -61,7 +61,7 @@ class FoodViewModel(application: Application,database: AppDatabase) : AndroidVie
 
 		CLog.d(dietEntity.toString())
 		try {
-			dietFoodDao.insertAll(arrayOf(DietFoodRelationEntity(dietEntity.id,foodEntity._id,count)))
+			dietFoodDao.insertAll(arrayOf(DietFoodRelationEntity(dietEntity.id,foodEntity._id,count)).toList())
 		} catch (e: SQLiteConstraintException) {
 			dietFoodDao.update(dietEntity.id,foodEntity._id)
 		}
@@ -73,16 +73,30 @@ class FoodViewModel(application: Application,database: AppDatabase) : AndroidVie
 		dietDao.insertAll(arrayOf(dietEntity))
 	}
 
-	@Transaction
+	/*@Transaction
 	fun delete(dietFood: DietFoodRelationEntity) =ioThread{
 		dietFoodDao.delete(dietFood)
+	}*/
+
+	@Transaction
+	fun delete(dietFood: DietEntity) =ioThread{
+		dietDao.delete(dietFood)
 	}
 
-	fun checkIfDeleteItselfOrNot(dietEntity: DietEntity) = with(observable.value){ ioThread{
+	@Transaction
+	fun insert(dietEntity: DietEntity, list: List<DietWithFood>) = ioThread {
+		dietDao.insert(dietEntity).let {id->
+			dietFoodDao.insertAll(list.map {
+				it.dietFood.apply { dietId=id }
+			})
+		}
+	}
+
+	/*fun checkIfDeleteItselfOrNot(dietEntity: DietEntity) = with(observable.value){ ioThread{
 		if(this ==null || isEmpty())
 		{
 			if(dietEntity.id!=0L)
 				dietDao.delete(dietEntity)
 		}
-	}}
+	}}*/
 }

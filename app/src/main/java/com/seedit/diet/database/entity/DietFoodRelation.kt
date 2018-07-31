@@ -8,10 +8,10 @@ import android.arch.persistence.room.Index
 @Entity(tableName = "dietfood",
 		primaryKeys = ["dietId","foodId"],
 		indices = [Index(value = ["dietId"]),Index(value = ["foodId"])],
-		foreignKeys = [ForeignKey(entity = DietEntity::class, parentColumns = ["id"], childColumns = ["dietId"]),
+		foreignKeys = [ForeignKey(entity = DietEntity::class, parentColumns = ["id"], childColumns = ["dietId"],onDelete = ForeignKey.CASCADE),
 						ForeignKey(entity = FoodEntity::class, parentColumns = ["_id"], childColumns = ["foodId"])])
 data class DietFoodRelationEntity(
-		val dietId:Long,
+		var dietId:Long,
 		val foodId:Long,
 		var foodCount:Int/*,
 		@PrimaryKey(autoGenerate = true)

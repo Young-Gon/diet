@@ -7,7 +7,7 @@ import android.arch.persistence.room.Index
 
 @Entity(tableName = "workoutRelationship",
 		primaryKeys = ["workoutID","recommendWorkoutID"],
-		foreignKeys = [ForeignKey(entity = WorkoutEntity::class,parentColumns = ["id"],childColumns = ["workoutID"]),
+		foreignKeys = [ForeignKey(entity = WorkoutEntity::class,parentColumns = ["id"],childColumns = ["workoutID"],onDelete = ForeignKey.CASCADE),
 						ForeignKey(entity = RecommendWorkoutEntity::class, parentColumns = ["id"], childColumns = ["recommendWorkoutID"])],
 		indices = [Index(value = ["workoutID"]),Index(value = ["recommendWorkoutID"])])
 data class WorkoutRelationshipEntity (

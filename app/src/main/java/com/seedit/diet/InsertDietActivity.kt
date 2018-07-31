@@ -62,9 +62,8 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 	    foodViewModel.observe(this, Observer {it?.let {
 		    adapter.appendItem(it)
 	    }})
-	    setupHeaderView()
 
-	    updateDietEntity(dietEntity)
+	    updateFoodEntity()
 
 	    addFoodEntity.isClickable=false
 	    addFoodEntity.isEnabled=false
@@ -95,7 +94,7 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 	    })
     }
 
-	fun setupHeaderView() {
+	fun updateFoodEntity() {
 		Glide.with(this)
 				.load(dietEntity.picture)
 				.thumbnail(0.1f)
@@ -116,16 +115,39 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 		}
 
 		spinnerDietCategory.setSelection(dietEntity.category.ordinal)
+
 	}
 
-	fun updateDietEntity(dietEntity: DietEntity) {
+	private fun updateCalorie()
+	{
 		// 화면에 총 칼로리 표시
 		txtTotalCal.text=String.format("총 칼로리: %,dKcal",dietEntity.calorie.toInt())
 	}
 
 	override fun onDestroy() {
-		foodViewModel.checkIfDeleteItselfOrNot(dietEntity)
+		//foodViewModel.checkIfDeleteItselfOrNot(dietEntity)
+		if (adapter.size == 0) {
+			if(dietEntity.id!=0L)
+				foodViewModel.delete(dietEntity)
+		}
+		else
+		{
+			foodViewModel.insert(dietEntity,adapter)
+		}
 		super.onDestroy()
+	}
+
+	private fun calTotalCalorie() {
+		dietEntity.content=""
+		dietEntity.calorie=0f
+		adapter.forEachIndexed { index, item->
+			dietEntity.content+="${item.food.name} ${item.dietFood.foodCount}개"
+			if(index+1<adapter.size)
+				dietEntity.content+=", "
+
+			dietEntity.calorie += item.food.calorie*item.dietFood.foodCount
+		}
+		updateCalorie()
 	}
 
 	fun onClickFoodImage(v: View?) {
@@ -210,24 +232,34 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 				}
 			}
 		}
+		calTotalCalorie()
 	}
 
 	override fun onConfirmAction(numberPicker: KeyboardNumberPicker?, value: String?){
 		if(!TextUtils.isEmpty(value))
 		{
 			CLog.d(value)
-			(numberPicker?.item as DietWithFood).dietFood.let {
-				it.foodCount = value?.toInt()!!
-				foodViewModel.insertDietFoodRelationship(it)
+			(numberPicker?.item as DietWithFood).let {
+				it.dietFood.foodCount = value?.toInt()!!
+				adapter.notifyItemChanged(adapter.indexOf(it))
 			}
+			calTotalCalorie()
 		}
 	}
 
 	override fun onCancelAction(numberPicker: KeyboardNumberPicker) {
 	}
 
-	override fun onDeleteAction(numberPicker: KeyboardNumberPicker?) {
-		foodViewModel.delete((numberPicker?.item as DietWithFood).dietFood)
+	override fun onDeleteAction(numberPicker: KeyboardNumberPicker?): Unit = with(adapter){
+		//foodViewModel.delete((numberPicker?.item as DietWithFood).dietFood)
+		find {
+			it==numberPicker?.item
+		}?.let {
+			indexOf(it).let {
+				removeAt(it)
+				notifyItemRemoved(it)
+			}
+		}
 	}
 
 	class InsertFoodViewBinder(itemView: View) : ViewBinder<DietWithFood>(itemView) {

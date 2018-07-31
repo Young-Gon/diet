@@ -13,6 +13,9 @@ interface DietDao {
     @Query("SELECT diet.* FROM diet WHERE date(diet.createAt/1000,'unixepoch')=date(:date/1000,'unixepoch')")
     fun findByDate(date: Date):LiveData<List<DietEntity>>
 
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
+	fun insert(diet: DietEntity):Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(diet: Array<DietEntity>):List<Long>
 
