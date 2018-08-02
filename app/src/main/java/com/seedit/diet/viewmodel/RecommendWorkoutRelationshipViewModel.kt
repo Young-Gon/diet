@@ -4,11 +4,13 @@ import android.app.Application
 import android.arch.lifecycle.*
 import android.arch.lifecycle.Observer
 import android.arch.persistence.room.Transaction
+import com.gondev.clog.CLog
 import com.seedit.diet.database.AppDatabase
 import com.seedit.diet.database.entity.RecommendWorkoutEntity
 import com.seedit.diet.database.entity.RecommendWorkoutRelationshipEntity
 import com.seedit.diet.database.entity.WorkoutEntity
 import com.seedit.diet.util.ioThread
+import java.text.SimpleDateFormat
 import java.util.*
 
 class RecommendWorkoutRelationshipViewModel(application: Application,database: AppDatabase) : AndroidViewModel(application)
@@ -24,6 +26,7 @@ class RecommendWorkoutRelationshipViewModel(application: Application,database: A
 	private var workoutMediatorLiveData = MediatorLiveData<List<WorkoutEntity>>()
 
 	fun find(calendar: Calendar) {
+		CLog.d("find "+ SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.time),5)
 		if(::recommendObservable.isInitialized)
 			recommendMediatorLiveData.removeSource(recommendObservable)
 

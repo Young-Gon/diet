@@ -1,6 +1,5 @@
 package com.seedit.diet.fragment
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -13,9 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.seedit.diat.util.SimpleAnimationListener
 import com.seedit.diet.R
-import com.seedit.diet.database.AppDatabase
 import com.seedit.diet.viewmodel.ProfileViewModel
-import com.seedit.diet.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_base.*
 import kotlinx.android.synthetic.main.fragment_base.view.*
 import java.text.SimpleDateFormat
@@ -29,13 +26,6 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
     private var listener: OnFragmentInteractionListener? = null
     private val sdf=SimpleDateFormat("yyyy년 MM월 dd일")
     protected lateinit var profileViewModel: ProfileViewModel
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        val factory= ViewModelFactory(activity?.application!!, AppDatabase.getInstance(context!!))
-        profileViewModel= ViewModelProviders.of(this,factory).get(ProfileViewModel::class.java)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =

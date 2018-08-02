@@ -54,9 +54,14 @@ class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
             }
         })
         clear()
-        addAll(list)
+	    addAll(list)
 
         mainThread {
+	        //클리어 후에 notify를 하지 않으면 리사이클러뷰가 죽는 버그가 있단다
+	        // 이런식으로 데이터셋을 갱신 해주자
+	        // 출처 - https://stackoverflow.com/questions/35653439/recycler-view-inconsistency-detected-invalid-view-holder-adapter-positionviewh/44590192
+	        /*notifyDataSetChanged()
+	        addAll(list)*/
             result.dispatchUpdatesTo(this)
         }
     }

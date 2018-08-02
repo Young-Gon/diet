@@ -17,4 +17,7 @@ interface ProfileDao {
 
     @Delete
     fun delete(profile: ProfileEntity)
+
+    @Query("SELECT * FROM profile")
+    fun find(): LiveData<ProfileEntity>
 }

@@ -75,4 +75,9 @@ dependencies {
     androidTestImplementation 'android.arch.core:core-testing:1.1.1'
     implementation project(':keyboardnumber')
     // numberpicker
+
+    // top snack bar
+    // https://github.com/AndreiD/TSnackBar
+    implementation 'com.androidadvance:topsnackbar:1.1.1'
+
 }

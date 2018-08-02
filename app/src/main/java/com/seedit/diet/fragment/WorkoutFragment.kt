@@ -1,7 +1,6 @@
 package com.seedit.diet.fragment
 
 import android.arch.lifecycle.Observer
-import android.os.Bundle
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -24,25 +23,6 @@ class WorkoutFragment:BaseFragment()
 
     override fun getContentLayoutRes()=R.layout.fragment_workout
 
-	override fun onActivityCreated(savedInstanceState: Bundle?) {
-		super.onActivityCreated(savedInstanceState)
-
-		viewModel=getViewModel(RecommendWorkoutRelationshipViewModel::class.java)
-		viewModel.find(Calendar.getInstance())
-		viewModel.observeForRecommend(this,Observer {
-			if(it==null || it.isEmpty()) {
-				viewModel.insertNewRecommendWorkout(getCurrentCalender())
-			}
-			else
-			{
-				bindViewWithData(getAttachView(),it[0])
-			}
-		})
-		viewModel.observeForWorkout(this,Observer {it?.let {
-			adapter.appendItem(it)
-		}})
-	}
-
 	private fun bindViewWithData(attachView: View, recommendWorkoutEntity: RecommendWorkoutEntity) = with(attachView) {
 		//recommendPicture.setImageResource(recommendWorkoutEntity.imageRes)
 		Glide.with(this)
@@ -55,14 +35,30 @@ class WorkoutFragment:BaseFragment()
 	}
 
 	override fun onContentViewCreated(view: View, calendar: Calendar) {
-		if(::viewModel.isInitialized)
-			viewModel.find(calendar)
+		if(!::adapter.isInitialized) {
+			ArrayListRecyclerViewAdapter(R.layout.item_workout, WorkoutViewBinder::class).let {
+				adapter = it
+				view.recyclerView.adapter = adapter
+			}
+		}
+		if(!::viewModel.isInitialized) {
+			viewModel = getViewModel(RecommendWorkoutRelationshipViewModel::class.java)
+			viewModel.observeForRecommend(this, Observer {
+				if (it == null || it.isEmpty()) {
+					viewModel.insertNewRecommendWorkout(getCurrentCalender())
+				} else {
+					bindViewWithData(getAttachView(), it[0])
+				}
+			})
+			viewModel.observeForWorkout(this, Observer {
+				it?.let {
+					adapter.appendItem(it)
+				}
+			})
+		}
+		viewModel.find(calendar)
 
 		view.recommendPicture.clipToOutline=true
-		ArrayListRecyclerViewAdapter(R.layout.item_workout,WorkoutViewBinder::class).let {
-			adapter=it
-			view.recyclerView.adapter=adapter
-		}
 		view.fab.setOnClickListener { it.context.startWorkoutActivity() }
     }
 

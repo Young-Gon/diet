@@ -28,7 +28,8 @@ import java.util.*
 						RecommendWorkoutEntity::class,
 						RecommendWorkoutRelationshipEntity::class,
 						WorkoutEntity::class,
-						WorkoutRelationshipEntity::class],
+						WorkoutRelationshipEntity::class,
+						BodyEntity::class],
 		version = 1)
 abstract class AppDatabase : RoomDatabase()
 {
@@ -42,6 +43,7 @@ abstract class AppDatabase : RoomDatabase()
 	abstract fun recommendWorkoutRelationshipDao(): RecommendWorkoutRelationshipDao
 	abstract fun workoutDao(): WorkoutDao
 	abstract fun workoutRelationship(): WorkoutRelationshipDao
+	abstract fun bodyDao():BodyDao
 
 	companion object
     {
