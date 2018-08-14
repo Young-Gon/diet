@@ -73,11 +73,14 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'android.arch.core:core-testing:1.1.1'
-    implementation project(':keyboardnumber')
     // numberpicker
+    implementation project(':keyboardnumber')
 
     // top snack bar
     // https://github.com/AndreiD/TSnackBar
     implementation 'com.androidadvance:topsnackbar:1.1.1'
 
+    // MPCahrt
+    // https://github.com/PhilJay/MPAndroidChart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 }

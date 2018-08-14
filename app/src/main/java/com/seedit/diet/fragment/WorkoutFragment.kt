@@ -35,12 +35,12 @@ class WorkoutFragment:BaseFragment()
 	}
 
 	override fun onContentViewCreated(view: View, calendar: Calendar) {
-		if(!::adapter.isInitialized) {
+
 			ArrayListRecyclerViewAdapter(R.layout.item_workout, WorkoutViewBinder::class).let {
 				adapter = it
 				view.recyclerView.adapter = adapter
 			}
-		}
+
 		if(!::viewModel.isInitialized) {
 			viewModel = getViewModel(RecommendWorkoutRelationshipViewModel::class.java)
 			viewModel.observeForRecommend(this, Observer {

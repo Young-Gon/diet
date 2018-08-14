@@ -8,13 +8,15 @@ import android.view.View
 import com.androidadvance.topsnackbar.TSnackbar
 
 
-class MoveUpwardBehavior(context: Context,attrs:AttributeSet) : CoordinatorLayout.Behavior<AppBarLayout>(context,attrs)
+class MoveUpwardBehavior(context: Context,attrs:AttributeSet) : AppBarLayout.Behavior(context,attrs)
 {
-	override fun layoutDependsOn(parent: CoordinatorLayout?, child: AppBarLayout?, dependency: View?): Boolean {
-		return dependency is TSnackbar.SnackbarLayout
-	}
+	override fun layoutDependsOn(parent: CoordinatorLayout?, child: AppBarLayout, dependency: View?)=
+		super.layoutDependsOn(parent, child, dependency) || dependency is TSnackbar.SnackbarLayout
 
 	override fun onDependentViewChanged(parent: CoordinatorLayout, child: AppBarLayout, dependency: View): Boolean {
+		if(dependency !is TSnackbar.SnackbarLayout)
+			return super.onDependentViewChanged(parent, child, dependency)
+
 		child.translationY =dependency.height+dependency.translationY
 		return false
 	}

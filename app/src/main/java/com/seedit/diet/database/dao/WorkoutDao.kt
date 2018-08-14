@@ -16,4 +16,7 @@ interface WorkoutDao
 
 	@Delete
 	fun delete(workEntity: WorkoutEntity)
+
+	@Query("SELECT sum(calorie) FROM workout WHERE date(createAt/1000,'unixepoch')=date(:date/1000,'unixepoch')")
+	fun findTotalCalories(date: Date?): LiveData<Float>
 }

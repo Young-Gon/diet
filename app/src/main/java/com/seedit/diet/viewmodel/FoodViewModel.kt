@@ -53,7 +53,7 @@ class FoodViewModel(application: Application,database: AppDatabase) : AndroidVie
 	fun insertDietFoodRelationship(dietEntity: DietEntity, foodEntity: FoodEntity, count: Int)= ioThread {
 		if(dietEntity.id==0L) {
 			dietEntity.id = dietDao.insertAll(arrayOf(dietEntity))[0]
-			CLog.d("insert diet id=${dietEntity.id}")
+			CLog.d("insertWeight diet id=${dietEntity.id}")
 			mainThread {
 				findDietFoodByDietID(dietEntity.id)
 			}
@@ -69,7 +69,7 @@ class FoodViewModel(application: Application,database: AppDatabase) : AndroidVie
 
 	@Transaction
 	fun insert(dietEntity: DietEntity) = ioThread{
-		CLog.d("insert diet id=${dietEntity.id}")
+		CLog.d("insertWeight diet id=${dietEntity.id}")
 		dietDao.insertAll(arrayOf(dietEntity))
 	}
 

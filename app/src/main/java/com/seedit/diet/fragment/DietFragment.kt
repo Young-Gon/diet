@@ -37,10 +37,8 @@ class DietFragment:BaseFragment()
 
 	override fun onContentViewCreated(view: View, calendar: Calendar) {
 	    CLog.d("onContentViewCreated")
-		if(!::adapter.isInitialized) {
 			adapter = ArrayListRecyclerViewAdapter(R.layout.item_diet, DietViewBinder::class)
 			view.recyclerView.adapter = adapter
-		}
 
 		if(!::viewModel.isInitialized)
 		{

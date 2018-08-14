@@ -1,17 +1,29 @@
 package com.seedit.diet.fragment
 
+import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.support.annotation.LayoutRes
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.androidadvance.topsnackbar.TSnackbar
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.gondev.clog.CLog
+import com.seedit.diet.BuildConfig
 import com.seedit.diet.MyInfoActivity
 import com.seedit.diet.R
 import com.seedit.diet.database.entity.BodyEntity
@@ -19,21 +31,24 @@ import com.seedit.diet.database.entity.ProfileEntity
 import com.seedit.diet.viewmodel.SummaryViewModel
 import com.seedit.diet.viewmodel.getViewModel
 import kotlinx.android.synthetic.main.alert_request_calorie.view.*
+import kotlinx.android.synthetic.main.fragment_summary.*
 import kotlinx.android.synthetic.main.fragment_summary.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-
 class SummaryFragment:BaseFragment() {
     private lateinit var summaryViewModel: SummaryViewModel
-	private lateinit var profileEntity: ProfileEntity
+	private var profileEntity: ProfileEntity?=null
 	private lateinit var bodyEntity: List<BodyEntity>
 	private val sdf=SimpleDateFormat("yyyy-MM-dd")
 
 	private var snackbar:TSnackbar?=null
+	private var todayDiet:Float?=null
+	private var todayWorkout: Float?=null
+	private var body:BodyEntity?=null
 
 	override fun getContentLayoutRes()=R.layout.fragment_summary
+
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		summaryViewModel = getViewModel(SummaryViewModel::class.java)
@@ -45,29 +60,176 @@ class SummaryFragment:BaseFragment() {
 			} else {
 				profileEntity=it
 				if(::bodyEntity.isInitialized)
-					updateSummary(Calendar.getInstance())
+					updateSummary(getCurrentCalender())
+
+				setChartData(getAttachView().findViewById(R.id.chartDiet),profileEntity?.targetDiet?.toFloat()?:0f,todayDiet?:0f)
+				setChartData(getAttachView().findViewById(R.id.chartWorkout),profileEntity?.targetWorkout?.toFloat()?:0f,todayWorkout?:0f)
 			}
 		})
 		summaryViewModel.findBody(this, Observer {
 			if(it==null)
 			{
 				// 프로필 스넥바가 있을경우 스넥바를 열지 말자
-				if(snackbar!=null && !snackbar?.isShown!!)
+				if(snackbar==null || !snackbar?.isShown!!)
 					showWeightButton()
 			}
 			else
 			{
 				bodyEntity=it
-				if(::profileEntity.isInitialized)
-					updateSummary(Calendar.getInstance())
+				if(profileEntity!=null)
+					updateSummary(getCurrentCalender())
 			}
+		})
+		if(BuildConfig.DEBUG)
+			chartDiet.isLogEnabled=true
+
+		summaryViewModel.findDiet(Calendar.getInstance())
+		summaryViewModel.observeForDiet(this, Observer {
+			it?.let {dietValue->
+				// TODO 식사량 차트 만들기~
+				CLog.v("dietValue=$dietValue")
+				todayDiet=dietValue
+			}
+			setChartData(getAttachView().findViewById(R.id.chartDiet),profileEntity?.targetDiet?.toFloat()?:0f,todayDiet?:0f)
+		})
+		summaryViewModel.findWorkout(Calendar.getInstance())
+		summaryViewModel.observeForWorkout(this, Observer {
+			it?.let {workoutValue->
+				CLog.v("workoutValue=$workoutValue")
+				todayWorkout=workoutValue
+			}
+			setChartData(getAttachView().findViewById(R.id.chartWorkout),profileEntity?.targetWorkout?.toFloat()?:0f,todayWorkout?:0f)
 		})
 	}
 
+	@SuppressLint("ResourceType")
+	private fun setChartLegend(@LayoutRes chart: Int):BarChart = with(getAttachView().findViewById(chart) as BarChart){
+		xAxis.valueFormatter= IAxisValueFormatter { value, axis ->
+			if (value == 0f)
+				"목표량"
+			else
+				"달성량"
+		}
+		legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+		legend.orientation=Legend.LegendOrientation.HORIZONTAL
+		legend.formSize=0f
+		legend.textSize=16f
+
+		this
+	}
+
+	private fun setChartData(chart: BarChart, data1: Float, data2: Float) =with(chart){
+		if (data == null) {
+			setDrawGridBackground(false)
+			setPinchZoom(false)
+			setDrawBarShadow(false)
+			setDrawValueAboveBar(true)
+			description.isEnabled = false
+
+			xAxis.position = XAxis.XAxisPosition.BOTTOM
+			xAxis.setDrawGridLines(false)
+			xAxis.granularity = 1f // only intervals of 1 day
+			xAxis.labelCount = 7
+
+			axisLeft.axisMinimum = 0f // this replaces setStartAtZero(true)
+			axisLeft.spaceTop = 15f
+			axisLeft.setLabelCount(8, false)
+			axisLeft.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART)
+
+			axisRight.setLabelCount(8, false)
+			axisRight.axisMinimum = 0f // this replaces setStartAtZero(true)
+			axisRight.spaceTop = 15f
+			axisRight.setDrawLabels(false)
+			axisRight.setDrawLimitLinesBehindData(false)
+			axisRight.setDrawGridLines(false)
+
+			val label=when (chart.id) {
+				R.id.chartDiet->"식사량"
+				R.id.chartWorkout->"운동량"
+				R.id.chartWater->"수분섭취량"
+				R.id.chartweight->"몸무게"
+				else -> throw IllegalArgumentException("리스트에 없는 라벨입니다")
+			}
+
+			data = BarData(BarDataSet(listOf(BarEntry(0f, data1), BarEntry(1f, data2)), label).apply {
+				val startColor1 = ContextCompat.getColor(context!!, android.R.color.holo_orange_light)
+				val startColor2 = ContextCompat.getColor(context!!, android.R.color.holo_blue_light)
+				setColors(startColor1, startColor2)
+			}).apply {
+				setValueTextSize(10f)
+				barWidth = 0.9f
+			}
+
+			invalidate()
+		}
+		else
+		{
+			data.getDataSetByIndex(0).getEntryForIndex(0).y=data1
+			data.getDataSetByIndex(0).getEntryForIndex(1).y=data2
+
+			axisLeft.axisMaximum = (if(data1>data2)data1 else data2)*1.1f
+
+			data.notifyDataChanged()
+			notifyDataSetChanged()
+			invalidate()
+		}
+	}
+
+	@SuppressLint("ResourceType")
 	override fun onContentViewCreated(view: View, calendar: Calendar) {
 		// TODO 날짜 변경시 써머리 변경
+		view.nestedScrollView.isNestedScrollingEnabled=true
 		updateSummary(calendar)
+
+		setChartLegend(R.id.chartDiet)
+		setChartLegend(R.id.chartWorkout)
+		setChartLegend(R.id.chartWater).setOnClickListener {
+			val view= LayoutInflater.from(context).inflate(R.layout.alert_request_calorie,null)
+			view.txtUnit.text="ml"
+			AlertDialog.Builder(this.context!!)
+					.setTitle("수분 섭취랑")
+					.setMessage("오늘의 수분 섭취량을 추가해 주세요.")
+					.setView(view)
+					.setPositiveButton(android.R.string.ok) { dialogInterface, i: Int ->
+						if(view.editCalorie.length()==0) {
+							return@setPositiveButton
+						}
+
+						//summaryViewModel.insertWater(sdf.format(getCurrentCalender().timeInMillis),view.editCalorie.text.toString().toInt())
+						body?.water=view.editCalorie.text.toString().toInt()
+						summaryViewModel.insertBody(body!!)
+					}.show()
+		}
+		setChartLegend(R.id.chartweight).setOnClickListener(onClickWeightListener)
+
+		if(::summaryViewModel.isInitialized) {
+			summaryViewModel.findDiet(calendar)
+			summaryViewModel.findWorkout(calendar)
+		}
     }
+
+	val onClickWeightListener=View.OnClickListener {
+		val view= LayoutInflater.from(context).inflate(R.layout.alert_request_calorie,null)
+		view.txtUnit.text="Kg"
+		AlertDialog.Builder(this.context!!)
+				.setTitle("몸무게 추가")
+				.setMessage("오늘의 몸무게를 추가해 주세요.")
+				.setView(view)
+				.setPositiveButton(android.R.string.ok) { dialogInterface, i: Int ->
+					if(view.editCalorie.length()==0) {
+						showWeightButton()
+						return@setPositiveButton
+					}
+
+					//입력된 몸무게를 디비에 추가
+					//summaryViewModel.insertWeight(sdf.format(getCurrentCalender().timeInMillis),view.editCalorie.text.toString().toInt())
+					body?.weight=view.editCalorie.text.toString().toInt()
+					summaryViewModel.insertBody(body!!)
+				}
+				.setNegativeButton(android.R.string.cancel){dialogInterface, i: Int ->
+					showWeightButton()
+				}.show()
+	}
 
 	private fun createSnackbar(text: String)=
 		TSnackbar.make( getAttachView() as CoordinatorLayout, text, Snackbar.LENGTH_INDEFINITE).apply {
@@ -76,43 +238,30 @@ class SummaryFragment:BaseFragment() {
 	}
 
 	fun showWeightButton() {
-		//Snackbar.make(getAttachView(),"",Snackbar.LENGTH_INDEFINITE).
-		createSnackbar("오늘의 몸무게를 추가해 주세요.").setAction("몸무게 추가"){
-			val view= LayoutInflater.from(context).inflate(R.layout.alert_request_calorie,null)
-			view.txtUnit.text="Kg"
-			AlertDialog.Builder(this.context!!)
-					.setTitle("몸무게 추가")
-					.setMessage("오늘의 몸무게를 추가해 주세요.")
-					.setView(view)
-					.setPositiveButton(android.R.string.ok) { dialogInterface, i: Int ->
-						if(view.editCalorie.length()==0) {
-							showWeightButton()
-							return@setPositiveButton
-						}
-
-						//입력된 몸무게를 디비에 추가
-						summaryViewModel.insert(sdf.format(getCurrentCalender().timeInMillis),view.editCalorie.text.toString().toInt())
-					}
-					.setNegativeButton(android.R.string.cancel){dialogInterface, i: Int ->
-						showWeightButton()
-					}.show()
-		}.show()
+		createSnackbar("오늘의 몸무게를 추가해 주세요.").setAction("몸무게 추가",onClickWeightListener).show()
 	}
 
 	fun updateSummary(calendar: Calendar) {
-		var today = sdf.format(calendar.timeInMillis)
-		CLog.i(today)
-		if(!::profileEntity.isInitialized || !::bodyEntity.isInitialized)
-		{
+		val today = sdf.format(calendar.timeInMillis)
+		if(profileEntity==null || !::bodyEntity.isInitialized)
 			return
+
+		val body = bodyEntity.find {
+			it.date == today
+		} ?: BodyEntity(today, 0, 0, null)
+
+		var weight=body.weight
+		if (weight == 0) {
+			showWeightButton()
+			weight=bodyEntity.firstOrNull {
+				it.date <= today
+			}?.weight?:0
 		}
 
-		val body = bodyEntity.firstOrNull {
-			it.date <= today
-		}
-		val dday=sdf.format(profileEntity.targetDday)
-		val targetWeight=profileEntity.targetWeight
-		if (body == null) {
+		this.body=body
+		val dday=sdf.format(profileEntity!!.targetDday)
+		val targetWeight=profileEntity!!.targetWeight
+		if (weight==0) {
 			showWeightButton()
 			getAttachView().txtSummaryLeft.text="""D-Day: $dday
 							  |몸무게: N/A
@@ -122,21 +271,19 @@ class SummaryFragment:BaseFragment() {
 							   |달성율: N/A""".trimMargin()
 			return
 		}
-		if(body.date!=today)
-			showWeightButton()
-		else
-			snackbar?.dismiss()
 
-		val weight=body.weight
-		val BMI=(weight.toFloat() /(profileEntity.height.toFloat()*profileEntity.height.toFloat()))* 10000
+		setChartData(getAttachView().findViewById(R.id.chartWater),profileEntity?.targetWater?.toFloat()?:0f,body.water.toFloat())
+		setChartData(getAttachView().findViewById(R.id.chartweight),profileEntity?.targetWeight?.toFloat()?:0f,body.weight.toFloat())
+
+		val BMI=(weight.toFloat() /(profileEntity!!.height.toFloat()*profileEntity!!.height.toFloat()))* 10000
 		val marginWeight=targetWeight-weight
-		val weightPercentage=((profileEntity.weight-weight).toFloat()/(profileEntity.weight-targetWeight).toFloat())*100
+		val weightPercentage=((profileEntity!!.weight-weight).toFloat()/(profileEntity!!.weight-targetWeight).toFloat())*100
 
 		getAttachView().txtSummaryLeft.text="""D-Day: $dday
-							  |몸무게: $weight
+							  |몸무게: $weight Kg
 							  |BMI: ${BMI.toInt()}""".trimMargin()
-		getAttachView().txtSummaryRight.text="""감량 목표: $targetWeight
-							   |현재: $marginWeight
-							   |달성율: $weightPercentage""".trimMargin()
+		getAttachView().txtSummaryRight.text="""감량 목표: $targetWeight Kg
+							   |현재: $marginWeight Kg
+							   |달성율: $weightPercentage%""".trimMargin()
 	}
 }

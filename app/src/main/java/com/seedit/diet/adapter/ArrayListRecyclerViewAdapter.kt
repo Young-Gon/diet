@@ -5,6 +5,7 @@ import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import com.gondev.clog.CLog
 import com.seedit.diet.util.ioThread
 import com.seedit.diet.util.mainThread
 import kotlin.reflect.KClass
@@ -33,36 +34,43 @@ class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
 	        holder.item=this[position]
         }
 
-    fun appendItem(list: List<ITEM>)= ioThread {
-        val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-            override fun getOldListSize(): Int {
-                return size
-            }
+    fun appendItem(list: List<ITEM>) {
+        CLog.v("appendItem",5)
+	    if (size == 0) {
+		    addAll(list)
+		    notifyItemRangeChanged(0,size)
+		    return
+	    }
+	    ioThread {
+	        val result = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+	            override fun getOldListSize(): Int {
+	                return size
+	            }
 
-            override fun getNewListSize(): Int {
-                return list.size
-            }
+	            override fun getNewListSize(): Int {
+	                return list.size
+	            }
 
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return get(oldItemPosition) === list.get(newItemPosition)
-            }
+	            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+	                return get(oldItemPosition) === list.get(newItemPosition)
+	            }
 
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                val newProduct = list.get(newItemPosition)
-                val oldProduct = get(oldItemPosition)
-                return newProduct?.equals(oldProduct)?:false
-            }
-        })
-        clear()
-	    addAll(list)
+	            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+	                val newProduct = list.get(newItemPosition)
+	                val oldProduct = get(oldItemPosition)
+	                return newProduct?.equals(oldProduct)?:false
+	            }
+	        })
+	        clear()
+		    addAll(list)
 
-        mainThread {
-	        //클리어 후에 notify를 하지 않으면 리사이클러뷰가 죽는 버그가 있단다
-	        // 이런식으로 데이터셋을 갱신 해주자
-	        // 출처 - https://stackoverflow.com/questions/35653439/recycler-view-inconsistency-detected-invalid-view-holder-adapter-positionviewh/44590192
-	        /*notifyDataSetChanged()
-	        addAll(list)*/
-            result.dispatchUpdatesTo(this)
-        }
+	        mainThread {
+	            result.dispatchUpdatesTo(this)
+	        }
+	    }
     }
+
+	fun appendItem(list: List<ITEM>, callback: DiffUtil.Callback) {
+
+	}
 }

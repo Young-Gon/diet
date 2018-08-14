@@ -24,4 +24,7 @@ interface DietDao {
 
 	@Query("SELECT * FROM diet WHERE date(diet.createAt/1000,'unixepoch')=date(:date/1000,'unixepoch')")
 	fun select(date: Date):LiveData<List<DietEntity>>
+
+	@Query("SELECT sum(calorie) FROM diet WHERE date(createAt/1000,'unixepoch')=date(:date/1000,'unixepoch')")
+	fun findTotalCalories(date: Date):LiveData<Float>
 }
