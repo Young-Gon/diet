@@ -1,9 +1,12 @@
 package com.seedit.diet.fragment
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.design.widget.CoordinatorLayout
@@ -12,17 +15,21 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageButton
 import android.widget.TextView
 import com.androidadvance.topsnackbar.TSnackbar
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.gondev.clog.CLog
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.TedPermission
 import com.seedit.diet.BuildConfig
 import com.seedit.diet.MyInfoActivity
 import com.seedit.diet.R
@@ -30,6 +37,7 @@ import com.seedit.diet.database.entity.BodyEntity
 import com.seedit.diet.database.entity.ProfileEntity
 import com.seedit.diet.viewmodel.SummaryViewModel
 import com.seedit.diet.viewmodel.getViewModel
+import gun0912.tedbottompicker.TedBottomPicker
 import kotlinx.android.synthetic.main.alert_request_calorie.view.*
 import kotlinx.android.synthetic.main.fragment_summary.*
 import kotlinx.android.synthetic.main.fragment_summary.view.*
@@ -202,6 +210,28 @@ class SummaryFragment:BaseFragment() {
 		}
 		setChartLegend(R.id.chartweight).setOnClickListener(onClickWeightListener)
 
+		val lineChart=getAttachView().findViewById<LineChart>(R.id.chartWeightLine)
+		lineChart.xAxis.granularity=1f
+		lineChart.xAxis.labelCount=5
+		lineChart.xAxis.setValueFormatter { value, axis ->
+			CLog.d(sdf.format(Date(value.toLong())))
+			sdf.format(Date(value.toLong()))
+		}
+		/*val mv = object :MarkerView(context, R.layout.custom_marker_view)
+		{
+			val tvContent:TextView=findViewById(R.id.tvContent)
+
+			override fun refreshContent(e: Entry, highlight: Highlight) {
+				tvContent.setText(sdf.format(Date(e.x.toLong())))
+				tvContent.setTextColor(0xff00ff)
+				super.refreshContent(e, highlight)
+			}
+
+			override fun getOffset()= MPPointF((-(width / 2)).toFloat(), (-height).toFloat());
+		}
+		mv.setChartView(lineChart) // For bounds control
+		lineChart.setMarker(mv)*/
+
 		if(::summaryViewModel.isInitialized) {
 			summaryViewModel.findDiet(calendar)
 			summaryViewModel.findWorkout(calendar)
@@ -246,6 +276,30 @@ class SummaryFragment:BaseFragment() {
 		if(profileEntity==null || !::bodyEntity.isInitialized)
 			return
 
+		//월간 몸무게 변화량
+		val values=bodyEntity.reversed().mapIndexed { index, bodyEntity ->
+			Entry(sdf.parse(bodyEntity.date).time.toFloat(), bodyEntity.weight.toFloat())
+			//Entry(index.toFloat(), bodyEntity.weight.toFloat())
+		}
+
+		val lineChart=getAttachView().findViewById<LineChart>(R.id.chartWeightLine)
+
+		if (lineChart.data != null && lineChart.data.dataSetCount > 0) {
+			(lineChart.data.getDataSetByIndex(0) as LineDataSet).values=values
+			lineChart.data.notifyDataChanged()
+			lineChart.notifyDataSetChanged()
+		} else {
+			lineChart.data= LineData(listOf(LineDataSet(values, "DataSet 1").apply {
+				color = ContextCompat.getColor(context!!, android.R.color.holo_blue_light)
+				lineWidth = 2f
+				setDrawCircles(false)
+				valueTextSize = 9f
+				setDrawFilled(false)
+			}))
+		}
+		lineChart.invalidate()
+
+
 		val body = bodyEntity.find {
 			it.date == today
 		} ?: BodyEntity(today, 0, 0, null)
@@ -254,13 +308,45 @@ class SummaryFragment:BaseFragment() {
 		if (weight == 0) {
 			showWeightButton()
 			weight=bodyEntity.firstOrNull {
-				it.date <= today
+				it.date < today
 			}?.weight?:0
+		}
+
+		val imgNoonBody = getAttachView().findViewById<ImageButton>(R.id.imgNoonbody)
+
+		Glide.with(context!!)
+				.load(body.image)
+				.thumbnail(0.1f)
+				.apply (RequestOptions()
+						.centerCrop()
+						.error(R.drawable.if_pomegranate))
+				.into(imgNoonBody)
+
+		imgNoonBody.clipToOutline=true
+		imgNoonBody.setOnClickListener {
+			if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+				TedPermission.with(context!!)
+						.setPermissionListener(object : PermissionListener {
+							override fun onPermissionGranted() {
+								openImagePicker()
+							}
+
+							override fun onPermissionDenied(deniedPermissions: java.util.ArrayList<String>?) {
+							}
+						})
+						.setRationaleMessage("프로필 설정을 위해여 갤러리 접근 권한이 필요 합니다")
+						.setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+						.check()
+				return@setOnClickListener
+			}
+
+			openImagePicker()
 		}
 
 		this.body=body
 		val dday=sdf.format(profileEntity!!.targetDday)
 		val targetWeight=profileEntity!!.targetWeight
+		setChartData(getAttachView().findViewById(R.id.chartWater),profileEntity?.targetWater?.toFloat()?:0f,body.water.toFloat())
 		if (weight==0) {
 			showWeightButton()
 			getAttachView().txtSummaryLeft.text="""D-Day: $dday
@@ -272,7 +358,6 @@ class SummaryFragment:BaseFragment() {
 			return
 		}
 
-		setChartData(getAttachView().findViewById(R.id.chartWater),profileEntity?.targetWater?.toFloat()?:0f,body.water.toFloat())
 		setChartData(getAttachView().findViewById(R.id.chartweight),profileEntity?.targetWeight?.toFloat()?:0f,body.weight.toFloat())
 
 		val BMI=(weight.toFloat() /(profileEntity!!.height.toFloat()*profileEntity!!.height.toFloat()))* 10000
@@ -285,5 +370,27 @@ class SummaryFragment:BaseFragment() {
 		getAttachView().txtSummaryRight.text="""감량 목표: $targetWeight Kg
 							   |현재: $marginWeight Kg
 							   |달성율: $weightPercentage%""".trimMargin()
+	}
+
+	fun openImagePicker() {
+		val bottomSheetDialogFragment = TedBottomPicker.Builder(context!!)
+				.setOnImageSelectedListener(object : TedBottomPicker.OnImageSelectedListener {
+					override fun onImageSelected(uri: Uri) {
+						/*Glide.with(this@SummaryFragment)
+								.load(uri)
+								.thumbnail(0.1f)
+								.apply (RequestOptions()
+										.centerCrop()
+										.error(R.drawable.if_pomegranate))
+								.into(imgFoodPicture)*/
+
+						body?.image=uri
+						summaryViewModel.insertBody(body!!)
+						//TODO 이미지 디비에 저장
+					}
+				})
+				.create()
+
+		bottomSheetDialogFragment.show(childFragmentManager)
 	}
 }

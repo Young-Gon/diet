@@ -62,7 +62,8 @@ class WorkoutFragment:BaseFragment()
 		view.fab.setOnClickListener { it.context.startWorkoutActivity() }
     }
 
-	class WorkoutViewBinder(containerView: View) : ViewBinder<WorkoutEntity>(containerView) {
+	class WorkoutViewBinder(containerView: View) : ViewBinder<WorkoutEntity>(containerView)
+	{
 		override fun bind(item: WorkoutEntity, position: Int) =with(itemView){
 			Glide.with(this)
 					.load(item.picture)

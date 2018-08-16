@@ -34,22 +34,6 @@ class SummaryViewModel(application: Application,database: AppDatabase) : Android
 		bodyObservable.observe(owner,observer)
 	}
 
-	/*fun insertWeight(date: String, weight: Int) = ioThread{
-		try {
-			bodyDao.updateWeight(date, weight)
-		} catch (e: SQLiteConstraintException) {
-			bodyDao.insert(BodyEntity(date,weight,0,null))
-		}
-	}
-
-	fun insertWater(date: String, water: Int) = ioThread{
-		try {
-			bodyDao.updateWater(date, water)
-		} catch (e:SQLiteConstraintException) {
-			bodyDao.insert(BodyEntity(date,0,water,null))
-		}
-	}*/
-
 	fun insertBody(body: BodyEntity) = ioThread {
 		bodyDao.insert(body)
 	}
