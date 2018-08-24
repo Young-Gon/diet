@@ -5,24 +5,27 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_profile"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import"/>
+            android:title="내 정보"/>
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_Analyze_diet"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery"/>
+            android:title="다이어트 분석"/>
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_noon_body"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow"/>
+            android:title="눈 바디"/>
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nab_community"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools"/>
+            android:title="커뮤니티"/>
     </group>
 
-    <item android:title="Communicate">
+    <item
+        android:id="@+id/nav_help"
+        android:icon="@drawable/ic_menu_share"
+        android:title="도움말"><!--
         <menu>
             <item
                 android:id="@+id/nav_share"
@@ -32,7 +35,7 @@
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Send"/>
-        </menu>
+        </menu>-->
     </item>
 
 </menu>

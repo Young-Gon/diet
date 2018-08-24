@@ -15,7 +15,9 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.bumptech.glide.Glide
 import com.gondev.clog.CLog
+import com.idescout.sql.SqlScoutServer
 import com.seedit.diet.database.AppDatabase
 import com.seedit.diet.fragment.BaseFragment
 import com.seedit.diet.fragment.DietFragment
@@ -26,6 +28,9 @@ import com.seedit.diet.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, BaseFragment.OnFragmentInteractionListener {
 
@@ -52,6 +57,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SqlScoutServer.create(this, getPackageName());
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -63,6 +69,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             else
             {
                 // TODO 드로어 메뉴 프로필 초기화
+	            with(profileMenu.getHeaderView(0)) {
+		            if (it[0].profile_image != null) {
+			            Glide.with(this)
+					            .load(it[0].profile_image)
+					            .thumbnail(0.1f)
+					            .into(imgFood)
+		            }
+
+		            val sdf=SimpleDateFormat("yyyy년 MM월 dd일")
+		            userName.text=it[0].name
+		            userInfo.text="${sdf.format(it[0].birthday)}\n${it[0].height}cm ${it[0].weight}Kg\n다이어트 돌입 ${(it[0].startDate.time - Date().time)/8640000+1}일 째"
+	            }
             }
         })
 
@@ -118,24 +136,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
+            R.id.nav_profile -> {
                 startActivity(Intent(this,MyInfoActivity::class.java))
             }
-            R.id.nav_gallery -> {
-
+            R.id.nav_Analyze_diet -> {
+	            startActivity(Intent(this,AnalyzeDietActivity::class.java))
             }
-            R.id.nav_slideshow -> {
-
+            R.id.nav_noon_body -> {
+                startActivity(Intent(this,NoonBodyActivity::class.java))
             }
-            R.id.nav_manage -> {
+	        R.id.nab_community -> {
 
-            }
-            R.id.nav_share -> {
+	        }
+	        R.id.nav_help -> {
 
-            }
-            R.id.nav_send -> {
-
-            }
+	        }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AnalyzeDietActivity">
+<android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chartCalorieLine"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/today"/>
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chartWorkoutLine"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chartCalorieLine"/>
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chartTotalCalorieLine"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chartWorkoutLine"/>
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chartWeightCalorieLine"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chartTotalCalorieLine"/>
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chartBMICalorieLine"
+        android:layout_width="0dp"
+        android:layout_height="240dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chartWeightCalorieLine"/>
+</android.support.constraint.ConstraintLayout>
+</ScrollView>

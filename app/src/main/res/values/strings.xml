@@ -7,9 +7,9 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_tab">TabActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">요약</string>
+    <string name="title_dashboard">식사</string>
+    <string name="title_notifications">운동</string>
     <string name="title_activity_page">PageActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
 

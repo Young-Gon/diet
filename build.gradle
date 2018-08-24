@@ -21,6 +21,7 @@ allprojects {
         jcenter()
         maven{url "https://gondev.bintray.com/yg1027/"}
         maven { url "https://jitpack.io" }
+        maven { url 'http://www.idescout.com/maven/repo/' }
     }
 }
 

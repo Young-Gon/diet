@@ -10,13 +10,12 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gondev.clog.CLog
@@ -34,13 +33,19 @@ import gun0912.tedbottompicker.TedBottomPicker
 import kotlinx.android.synthetic.main.activity_insert_diet.*
 import kotlinx.android.synthetic.main.alert_request_calorie.view.*
 import kotlinx.android.synthetic.main.item_insert_food.view.*
+import java.util.*
 
 
 fun Context.startDietActivity(dietEntity: DietEntity=DietEntity()) =
 		startActivity(Intent(this, InsertDietActivity::class.java)
 				.putExtra(INTENT_KEY_ENTITY, dietEntity))
 
+fun Context.startDietActivity(createAt: Calendar) =
+		startActivity(Intent(this, InsertDietActivity::class.java)
+				.putExtra(INTENT_KEY_CREATE_AT, createAt.timeInMillis))
+
 private const val INTENT_KEY_ENTITY = "entity"
+private const val INTENT_KEY_CREATE_AT= "createAt"
 
 class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 {
@@ -52,7 +57,9 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_insert_diet)
 
-	    dietEntity=intent.getParcelableExtra(INTENT_KEY_ENTITY)?:DietEntity()
+	    dietEntity=intent.getParcelableExtra(INTENT_KEY_ENTITY)?:DietEntity().apply {
+		    createAt=Date(intent.getLongExtra(INTENT_KEY_CREATE_AT,0))
+	    }
 
 	    adapter=ArrayListRecyclerViewAdapter(R.layout.item_insert_food,InsertFoodViewBinder::class)
 	    recyclerView.adapter=adapter
@@ -65,33 +72,11 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 
 	    updateFoodEntity()
 
-	    addFoodEntity.isClickable=false
-	    addFoodEntity.isEnabled=false
 	    searchView.setAdapter(SearchViewAdapter(this, R.layout.item_searchview_popup, foodViewModel))
 	    searchView.setOnItemClickListener { parent, view, position, id ->
 		    val item=parent.getItemAtPosition(position) as FoodEntity
-		    searchView.setText(item.name)
-		    searchView.tag = item
+		    addToList(item)
 	    }
-	    searchView.addTextChangedListener(object : TextWatcher {
-		    override fun afterTextChanged(s: Editable?) {
-			    if (s?.length!! > 0) {
-				    addFoodEntity.isClickable=true
-				    addFoodEntity.isEnabled=true
-			    }
-			    else
-			    {
-				    addFoodEntity.isClickable=false
-				    addFoodEntity.isEnabled=false
-			    }
-		    }
-
-		    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-		    }
-
-		    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-		    }
-	    })
     }
 
 	fun updateFoodEntity() {
@@ -191,31 +176,31 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 
 	}
 
-	fun onClickAddFood(v: View?) = (searchView.tag as FoodEntity).let {
+	fun onClickAddFood(v: View?){
 		if (searchView.length()==0)
-			return@let
+			return
 
-		if(it.name != searchView.text.toString())
-		{
-			val view=LayoutInflater.from(this).inflate(R.layout.alert_request_calorie,null)
-			view.foodName.text=searchView.text
-			AlertDialog.Builder(this@InsertDietActivity)
-				.setTitle("음식 추가")
-				.setMessage("검색된 음식이 없습니다.\n 해당 음식의 칼로리를 추가 입력 하시겠습니까?")
-				.setView(view)
-				.setPositiveButton(android.R.string.ok) { dialogInterface, i: Int ->
-					val item=FoodEntity(searchView.text.toString(),view.editCalorie.text.toString().toFloat())
-					foodViewModel.insert(item)
-					addToList(item)
+		val view=LayoutInflater.from(this).inflate(R.layout.alert_request_calorie,null)
+
+		AlertDialog.Builder(this@InsertDietActivity)
+			.setTitle("음식 추가")
+			.setMessage("'"+searchView.text+"' 검색된 음식이 없습니다.\n 해당 음식의 칼로리를 추가 입력 하시겠습니까?")
+			.setView(view)
+			.setPositiveButton(android.R.string.ok) { dialogInterface, i: Int ->
+
+				if (view.editCalorie.length() == 0) {
+					Toast.makeText(this@InsertDietActivity, "운동량을 입력해 주세요", Toast.LENGTH_SHORT).show()
+					return@setPositiveButton
 				}
-				.setNegativeButton(android.R.string.cancel,null)
-				.show()
-			return@let
-		}
-		addToList(it)
+				val item=FoodEntity(searchView.text.toString(),view.editCalorie.text.toString().toFloat())
+				foodViewModel.insert(item)
+				addToList(item)
+			}
+			.setNegativeButton(android.R.string.cancel,null)
+			.show()
 	}
 
-	fun addToList(item: FoodEntity) {
+	private fun addToList(item: FoodEntity) {
 		searchView.setText("")
 		//foodViewModel.insertDietFoodRelationship(dietEntity,item,1)
 		DietWithFood(DietFoodRelationEntity(dietEntity.id,item._id,1),item).apply {

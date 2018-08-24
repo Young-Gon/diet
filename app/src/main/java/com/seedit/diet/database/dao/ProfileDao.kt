@@ -3,6 +3,7 @@ package com.seedit.diet.database.dao
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
 import com.seedit.diet.database.entity.ProfileEntity
+import io.reactivex.Flowable
 
 @Dao
 interface ProfileDao {
@@ -20,4 +21,7 @@ interface ProfileDao {
 
     @Query("SELECT * FROM profile")
     fun find(): LiveData<ProfileEntity>
+
+    @Query("SELECT * FROM profile")
+    fun findRx(): Flowable<ProfileEntity>
 }

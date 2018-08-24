@@ -75,12 +75,21 @@ dependencies {
     androidTestImplementation 'android.arch.core:core-testing:1.1.1'
     // numberpicker
     implementation project(':keyboardnumber')
-
     // top snack bar
     // https://github.com/AndreiD/TSnackBar
     implementation 'com.androidadvance:topsnackbar:1.1.1'
-
     // MPCahrt
     // https://github.com/PhilJay/MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    //http://www.idescout.com/wiki/index.php/Main/ConnectToAndroidDbs
+    debugImplementation 'com.idescout.sql:sqlscout-server:4.1'
+    releaseImplementation 'com.idescout.sql:sqlscout-server-noop:4.1'
+    // coroutine
+    // https://github.com/Kotlin/kotlinx.coroutines
+    //implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.24.0'
+
+    // rxjava
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'android.arch.persistence.room:rxjava2:1.1.1'
 }

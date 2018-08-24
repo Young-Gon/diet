@@ -48,6 +48,10 @@
         </activity>
         <activity android:name=".WorkoutActivity">
         </activity>
+        <activity android:name=".AnalyzeDietActivity">
+        </activity>
+        <activity android:name=".NoonBodyActivity">
+        </activity>
     </application>
 
 </manifest>

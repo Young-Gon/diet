@@ -2,6 +2,7 @@ package com.seedit.diet.database.dao
 
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
+import com.seedit.diet.database.entity.DietCaloriesPOJO
 import com.seedit.diet.database.entity.DietEntity
 import java.util.*
 
@@ -27,4 +28,7 @@ interface DietDao {
 
 	@Query("SELECT sum(calorie) FROM diet WHERE date(createAt/1000,'unixepoch')=date(:date/1000,'unixepoch')")
 	fun findTotalCalories(date: Date):LiveData<Float>
+
+	@Query("SELECT sum(calorie) as calorie, createAt FROM diet GROUP BY date(createAt/1000,'unixepoch') ORDER BY createAt ASC")
+	fun findCaloriesGroupByDate(): LiveData<List<DietCaloriesPOJO>>
 }

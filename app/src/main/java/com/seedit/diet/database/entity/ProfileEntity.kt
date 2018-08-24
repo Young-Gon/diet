@@ -19,5 +19,6 @@ data class ProfileEntity(
         var targetWorkout:Int=0,
         var targetDiet:Int=0,
         var targetWater:Int=0,
-        var targetDday:Date=Date(0)
+        var targetDday:Date=Date(0),
+        var startDate:Date=Date()
         )

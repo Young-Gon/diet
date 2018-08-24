@@ -10,5 +10,6 @@ data class BodyEntity(
 		var date: String,
 		var weight: Int,
 		var water: Int,
-		var image: Uri?
+		var image: Uri?,
+		var flagWrittenWeight:Boolean=false
 )

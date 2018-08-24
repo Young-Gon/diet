@@ -15,7 +15,7 @@ data class WorkoutEntity (
 		var content: String="",
 		var calorie:Float=0f,
 		var picture: Uri?=null,
-		val createAt: Date = Date()
+		var createAt: Date = Date()
 ) : Parcelable
 {
 	constructor(ids: Long=0):this(id=ids)

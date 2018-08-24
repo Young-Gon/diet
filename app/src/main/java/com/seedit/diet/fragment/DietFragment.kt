@@ -62,7 +62,7 @@ class DietFragment:BaseFragment()
 
 	    view.recommendPicture.clipToOutline=true
 
-        view.fab.setOnClickListener { it.context.startDietActivity() }
+        view.fab.setOnClickListener { it.context.startDietActivity(getCurrentCalender()) }
     }
 
     class DietViewBinder(itemView: View) : ViewBinder<DietEntity>(itemView) {

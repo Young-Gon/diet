@@ -217,6 +217,14 @@ class SummaryFragment:BaseFragment() {
 			CLog.d(sdf.format(Date(value.toLong())))
 			sdf.format(Date(value.toLong()))
 		}
+		lineChart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+		lineChart.legend.orientation=Legend.LegendOrientation.HORIZONTAL
+		lineChart.legend.formSize=0f
+		lineChart.legend.textSize=16f
+
+		lineChart.axisLeft.axisMinimum = 0f // this replaces setStartAtZero(true)
+		lineChart.axisRight.axisMinimum = 0f // this replaces setStartAtZero(true)
+
 		/*val mv = object :MarkerView(context, R.layout.custom_marker_view)
 		{
 			val tvContent:TextView=findViewById(R.id.tvContent)
@@ -254,6 +262,7 @@ class SummaryFragment:BaseFragment() {
 					//입력된 몸무게를 디비에 추가
 					//summaryViewModel.insertWeight(sdf.format(getCurrentCalender().timeInMillis),view.editCalorie.text.toString().toInt())
 					body?.weight=view.editCalorie.text.toString().toInt()
+					body?.flagWrittenWeight=true
 					summaryViewModel.insertBody(body!!)
 				}
 				.setNegativeButton(android.R.string.cancel){dialogInterface, i: Int ->
@@ -277,40 +286,43 @@ class SummaryFragment:BaseFragment() {
 			return
 
 		//월간 몸무게 변화량
-		val values=bodyEntity.reversed().mapIndexed { index, bodyEntity ->
+		val values=bodyEntity.mapIndexed { index, bodyEntity ->
 			Entry(sdf.parse(bodyEntity.date).time.toFloat(), bodyEntity.weight.toFloat())
 			//Entry(index.toFloat(), bodyEntity.weight.toFloat())
 		}
 
-		val lineChart=getAttachView().findViewById<LineChart>(R.id.chartWeightLine)
+		if (values.size > 0) {
+			val lineChart=getAttachView().findViewById<LineChart>(R.id.chartWeightLine)
 
-		if (lineChart.data != null && lineChart.data.dataSetCount > 0) {
-			(lineChart.data.getDataSetByIndex(0) as LineDataSet).values=values
-			lineChart.data.notifyDataChanged()
-			lineChart.notifyDataSetChanged()
-		} else {
-			lineChart.data= LineData(listOf(LineDataSet(values, "DataSet 1").apply {
-				color = ContextCompat.getColor(context!!, android.R.color.holo_blue_light)
-				lineWidth = 2f
-				setDrawCircles(false)
-				valueTextSize = 9f
-				setDrawFilled(false)
-			}))
+			if (lineChart.data != null && lineChart.data.dataSetCount > 0) {
+				(lineChart.data.getDataSetByIndex(0) as LineDataSet).values=values
+				lineChart.data.notifyDataChanged()
+				lineChart.notifyDataSetChanged()
+			} else {
+				lineChart.data= LineData(listOf(LineDataSet(values, "몸무게 변화량").apply {
+					color = ContextCompat.getColor(context!!, android.R.color.holo_blue_light)
+					lineWidth = 2f
+					setDrawCircles(false)
+					valueTextSize = 9f
+					setDrawFilled(false)
+				}))
+			}
+			lineChart.invalidate()
 		}
-		lineChart.invalidate()
 
-
-		val body = bodyEntity.find {
+		val body = bodyEntity.findLast {
 			it.date == today
-		} ?: BodyEntity(today, 0, 0, null)
+		} ?: BodyEntity(today, bodyEntity.lastOrNull {
+			it.date < today
+		}?.weight?:profileEntity?.weight?:0, 0, null)
 
-		var weight=body.weight
+		/*var weight=body.weight
 		if (weight == 0) {
 			showWeightButton()
 			weight=bodyEntity.firstOrNull {
 				it.date < today
 			}?.weight?:0
-		}
+		}*/
 
 		val imgNoonBody = getAttachView().findViewById<ImageButton>(R.id.imgNoonbody)
 
@@ -347,8 +359,11 @@ class SummaryFragment:BaseFragment() {
 		val dday=sdf.format(profileEntity!!.targetDday)
 		val targetWeight=profileEntity!!.targetWeight
 		setChartData(getAttachView().findViewById(R.id.chartWater),profileEntity?.targetWater?.toFloat()?:0f,body.water.toFloat())
-		if (weight==0) {
+		setChartData(getAttachView().findViewById(R.id.chartweight),profileEntity?.targetWeight?.toFloat()?:0f,body.weight.toFloat())
+		if(body.flagWrittenWeight==false)
 			showWeightButton()
+
+		if (body.weight==0) {
 			getAttachView().txtSummaryLeft.text="""D-Day: $dday
 							  |몸무게: N/A
 							  |BMI: N/A""".trimMargin()
@@ -358,14 +373,12 @@ class SummaryFragment:BaseFragment() {
 			return
 		}
 
-		setChartData(getAttachView().findViewById(R.id.chartweight),profileEntity?.targetWeight?.toFloat()?:0f,body.weight.toFloat())
-
-		val BMI=(weight.toFloat() /(profileEntity!!.height.toFloat()*profileEntity!!.height.toFloat()))* 10000
-		val marginWeight=targetWeight-weight
-		val weightPercentage=((profileEntity!!.weight-weight).toFloat()/(profileEntity!!.weight-targetWeight).toFloat())*100
+		val BMI=(body.weight.toFloat() /(profileEntity!!.height.toFloat()*profileEntity!!.height.toFloat()))* 10000
+		val marginWeight=targetWeight-body.weight
+		val weightPercentage=((profileEntity!!.weight-body.weight).toFloat()/(profileEntity!!.weight-targetWeight).toFloat())*100
 
 		getAttachView().txtSummaryLeft.text="""D-Day: $dday
-							  |몸무게: $weight Kg
+							  |몸무게: ${body.weight} Kg
 							  |BMI: ${BMI.toInt()}""".trimMargin()
 		getAttachView().txtSummaryRight.text="""감량 목표: $targetWeight Kg
 							   |현재: $marginWeight Kg
@@ -376,14 +389,6 @@ class SummaryFragment:BaseFragment() {
 		val bottomSheetDialogFragment = TedBottomPicker.Builder(context!!)
 				.setOnImageSelectedListener(object : TedBottomPicker.OnImageSelectedListener {
 					override fun onImageSelected(uri: Uri) {
-						/*Glide.with(this@SummaryFragment)
-								.load(uri)
-								.thumbnail(0.1f)
-								.apply (RequestOptions()
-										.centerCrop()
-										.error(R.drawable.if_pomegranate))
-								.into(imgFoodPicture)*/
-
 						body?.image=uri
 						summaryViewModel.insertBody(body!!)
 						//TODO 이미지 디비에 저장
