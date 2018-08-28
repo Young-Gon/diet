@@ -159,7 +159,7 @@ class WorkoutActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 		bottomSheetDialogFragment.show(supportFragmentManager)
 	}
 
-	fun onClickAddExercise(view: View){
+	fun onClickAddExercise(v: View){
 		if(searchView.length()==0)
 			return
 

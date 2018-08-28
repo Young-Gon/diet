@@ -31,6 +31,7 @@ import com.gondev.clog.CLog
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import com.seedit.diet.BuildConfig
+import com.seedit.diet.MainActivity
 import com.seedit.diet.MyInfoActivity
 import com.seedit.diet.R
 import com.seedit.diet.database.entity.BodyEntity
@@ -184,13 +185,18 @@ class SummaryFragment:BaseFragment() {
 	}
 
 	@SuppressLint("ResourceType")
-	override fun onContentViewCreated(view: View, calendar: Calendar) {
+	override fun onContentViewCreated(v: View, calendar: Calendar) {
 		// TODO 날짜 변경시 써머리 변경
-		view.nestedScrollView.isNestedScrollingEnabled=true
+		v.nestedScrollView.isNestedScrollingEnabled=true
 		updateSummary(calendar)
 
-		setChartLegend(R.id.chartDiet)
-		setChartLegend(R.id.chartWorkout)
+		setChartLegend(R.id.chartDiet).setOnClickListener {
+			(activity as OnFragmentInteractionListener).setCurrentPage(1)
+		}
+		setChartLegend(R.id.chartWorkout).setOnClickListener {
+			(activity as OnFragmentInteractionListener).setCurrentPage(2)
+
+		}
 		setChartLegend(R.id.chartWater).setOnClickListener {
 			val view= LayoutInflater.from(context).inflate(R.layout.alert_request_calorie,null)
 			view.txtUnit.text="ml"
@@ -203,7 +209,7 @@ class SummaryFragment:BaseFragment() {
 							return@setPositiveButton
 						}
 
-						//summaryViewModel.insertWater(sdf.format(getCurrentCalender().timeInMillis),view.editCalorie.text.toString().toInt())
+						//summaryViewModel.insertWater(sdf.format(getCurrentCalender().timeInMillis),v.editCalorie.text.toString().toInt())
 						body?.water=view.editCalorie.text.toString().toInt()
 						summaryViewModel.insertBody(body!!)
 					}.show()
@@ -224,21 +230,6 @@ class SummaryFragment:BaseFragment() {
 
 		lineChart.axisLeft.axisMinimum = 0f // this replaces setStartAtZero(true)
 		lineChart.axisRight.axisMinimum = 0f // this replaces setStartAtZero(true)
-
-		/*val mv = object :MarkerView(context, R.layout.custom_marker_view)
-		{
-			val tvContent:TextView=findViewById(R.id.tvContent)
-
-			override fun refreshContent(e: Entry, highlight: Highlight) {
-				tvContent.setText(sdf.format(Date(e.x.toLong())))
-				tvContent.setTextColor(0xff00ff)
-				super.refreshContent(e, highlight)
-			}
-
-			override fun getOffset()= MPPointF((-(width / 2)).toFloat(), (-height).toFloat());
-		}
-		mv.setChartView(lineChart) // For bounds control
-		lineChart.setMarker(mv)*/
 
 		if(::summaryViewModel.isInitialized) {
 			summaryViewModel.findDiet(calendar)
@@ -315,14 +306,6 @@ class SummaryFragment:BaseFragment() {
 		} ?: BodyEntity(today, bodyEntity.lastOrNull {
 			it.date < today
 		}?.weight?:profileEntity?.weight?:0, 0, null)
-
-		/*var weight=body.weight
-		if (weight == 0) {
-			showWeightButton()
-			weight=bodyEntity.firstOrNull {
-				it.date < today
-			}?.weight?:0
-		}*/
 
 		val imgNoonBody = getAttachView().findViewById<ImageButton>(R.id.imgNoonbody)
 

@@ -41,6 +41,7 @@ class AnalyzeDietActivity : AppCompatActivity()
 		viewModel.findWorkout(this, Observer {list->
 			if(list==null || list.isEmpty())
 				return@Observer
+
 			setChartData(chartWorkoutLine, "운동량 변화", list.map { entity->
 				Entry(entity.createAt,entity.calorie)
 			})
@@ -76,6 +77,9 @@ class AnalyzeDietActivity : AppCompatActivity()
 
 		setChart(chartBMICalorieLine)
 		viewModel.findBMI(sdf){ list->
+			if(list.isEmpty())
+				return@findBMI
+
 			setChartData(chartBMICalorieLine,"BMI 지수 변화",list)
 		}
 	}
@@ -96,6 +100,7 @@ class AnalyzeDietActivity : AppCompatActivity()
 	}
 
 	private fun setChartData(chart: LineChart, title: String, values: List<Entry>) =with(chart) {
+		CLog.d(title)
 		if (data != null && data.dataSetCount > 0) {
 			(data.getDataSetByIndex(0) as LineDataSet).values=values
 			data.notifyDataChanged()

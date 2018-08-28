@@ -8,6 +8,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.seedit.diet.viewmodel.AnalyzeDietViewModel
@@ -15,7 +16,6 @@ import com.seedit.diet.viewmodel.getViewModel
 import gun0912.tedbottompicker.GridSpacingItemDecoration
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_noon_body.*
-import kotlinx.android.synthetic.main.tedbottompicker_grid_item.*
 
 class NoonBodyActivity : AppCompatActivity()
 {
@@ -38,16 +38,19 @@ class NoonBodyActivity : AppCompatActivity()
 		})
 	}
 
-	class NoonBodyAdapter(urlList: List<Uri>):RecyclerView.Adapter<NoonBodyAdapter.NoonBodyViewHolder>(), List<Uri> by urlList
+	inner class NoonBodyAdapter(urlList: List<Uri>):RecyclerView.Adapter<NoonBodyAdapter.NoonBodyViewHolder>(), List<Uri> by urlList
 	{
-		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)= NoonBodyViewHolder(View.inflate(parent.context, gun0912.tedbottompicker.R.layout.tedbottompicker_grid_item, null));
+		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)=
+				NoonBodyViewHolder(View.inflate(parent.context, R.layout.tedbottompicker_grid_item, null));
 
 		override fun getItemCount()= size
 
-		override fun onBindViewHolder(holder: NoonBodyViewHolder, position: Int)= holder.bind(get(position))
+		override fun onBindViewHolder(holder: NoonBodyViewHolder, position: Int)=
+				holder.bind(get(position))
 
-		class NoonBodyViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer, View.OnClickListener
+		inner class NoonBodyViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer, View.OnClickListener
 		{
+            val iv_thumbnail=containerView.findViewById<ImageView>(R.id.iv_thumbnail)
 			init {
 				containerView.setOnClickListener(this)
 			}
@@ -63,7 +66,7 @@ class NoonBodyActivity : AppCompatActivity()
 			}
 
 			override fun onClick(v: View?) {
-				TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+				startGalleryActivity(this@NoonBodyAdapter,adapterPosition)
 			}
 		}
 	}

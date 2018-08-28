@@ -82,8 +82,15 @@ abstract class AppDatabase : RoomDatabase()
 	    fun getRecommendDietList()=arrayOf(
                 RecommendDietEntity(R.drawable.recommend1,"오트밀 20g, 바나나 100g, 사과 125g, 우유 200ml",345),
                 RecommendDietEntity(R.drawable.recommend2,"현미밥 70g, 미역국 300g, 배추김치 50g, 가자미구이 50g",207),
-                RecommendDietEntity(R.drawable.recommend3,"삶은 달걀 100g, 찐 고구마 200g, 닭가슴살 샐러드 100g",448)
-        )
+                RecommendDietEntity(R.drawable.recommend3,"삶은 달걀 100g, 찐 고구마 200g, 닭가슴살 샐러드 100g",448),
+			    RecommendDietEntity(R.drawable.recommend3,"잡곡밥 75g, 맑은 두붓국 200g, 배추김치 50g, 미역줄기 무침 50g, 장조림 50g", 274),
+			    RecommendDietEntity(R.drawable.recommend3,"콩밥 75g, 버섯전골 250g, 나물 50g", 224),
+			    RecommendDietEntity(R.drawable.recommend3,"바나나 100g, 씨리얼 한 줌 30g, 우유 200ml", 326),
+			    RecommendDietEntity(R.drawable.recommend3,"찐 고구마 200g, 삶은 달걀 100g, 과일 요거트 샐러드 150g", 403),
+			    RecommendDietEntity(R.drawable.recommend3,"닭가슴살 샐러드 100g, 사과 125g, 포도 100g, 요거트 70g", 293),
+			    RecommendDietEntity(R.drawable.recommend3,"계란 스크램블 100g, 사과 125g, 저지방 우유 200ml, 아몬드 6g", 317),
+			    RecommendDietEntity(R.drawable.recommend3,"파프리카 100g, 느타리 버섯볶음 100g, 삶은 양배추 100g, 닭가슴살구이 100g", 293)
+			    )
 
 	    private fun getRecommendWorkoutList()=arrayOf(
 			    RecommendWorkoutEntity("abcd","seaf",382f,R.drawable.workout1),

@@ -129,8 +129,7 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
      * for more information.
      */
     interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+        fun setCurrentPage(page: Int)
     }
 
 }

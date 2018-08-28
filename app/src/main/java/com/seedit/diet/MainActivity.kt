@@ -17,7 +17,6 @@ import android.view.Menu
 import android.view.MenuItem
 import com.bumptech.glide.Glide
 import com.gondev.clog.CLog
-import com.idescout.sql.SqlScoutServer
 import com.seedit.diet.database.AppDatabase
 import com.seedit.diet.fragment.BaseFragment
 import com.seedit.diet.fragment.DietFragment
@@ -57,7 +56,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SqlScoutServer.create(this, getPackageName());
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -83,7 +81,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 	            }
             }
         })
-
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -119,8 +116,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onFragmentInteraction(uri: Uri) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun setCurrentPage(page: Int) {
+        container.setCurrentItem(page,true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

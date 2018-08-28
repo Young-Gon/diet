@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.51'
+    ext.kotlin_version = '1.2.50'
     repositories {
         google()
         jcenter()
@@ -19,9 +19,8 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven{url "https://gondev.bintray.com/yg1027/"}
         maven { url "https://jitpack.io" }
-        maven { url 'http://www.idescout.com/maven/repo/' }
+        maven { url  "http://dl.bintray.com/piasy/maven" }
     }
 }
 

@@ -69,8 +69,4 @@ class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
 	        }
 	    }
     }
-
-	fun appendItem(list: List<ITEM>, callback: DiffUtil.Callback) {
-
-	}
 }
