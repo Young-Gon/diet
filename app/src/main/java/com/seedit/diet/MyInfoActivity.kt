@@ -47,6 +47,7 @@ class MyInfoActivity : AppCompatActivity() {
             it?.let {
                 if(it.isEmpty())
                     viewModel.insert(if(BuildConfig.DEBUG) ProfileEntity(0,null,"test",0,Calendar.getInstance().apply { set(1980,10,17) }.time,80,170,60,400,300,2000,Calendar.getInstance().apply { set(2018,10,17) }.time) else ProfileEntity(0))
+                    //viewModel.insert(ProfileEntity(0))
                 else
                 //if(it.isNotEmpty())
                 {

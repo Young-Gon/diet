@@ -6,7 +6,9 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import android.content.Context
+import android.os.Build
 import com.gondev.clog.CLog
+import com.seedit.diet.BuildConfig
 import com.seedit.diet.R
 import com.seedit.diet.database.converter.DateConverter
 import com.seedit.diet.database.converter.DietCategoryConverter
@@ -71,7 +73,19 @@ abstract class AppDatabase : RoomDatabase()
                                         runInTransaction{
                                             recommendDietDao().insertAll(getRecommendDietList())
 	                                        recommendWorkoutDao().insertAll(getRecommendWorkoutList())
-	                                        foodDao().insertAll(getFoodList())
+											foodDao().insertAll(getFoodList())
+											if (BuildConfig.DEBUG) {
+												recommendWorkoutDao().insertAll(arrayOf(
+													RecommendWorkoutEntity("abcd","seaf",382f,R.drawable.workout1),
+													RecommendWorkoutEntity("asdf","saef",382f,R.drawable.workout1),
+													RecommendWorkoutEntity("qwer","saef",382f,R.drawable.workout1)
+												))
+
+												foodDao().insertAll(arrayOf(
+														FoodEntity("abcd",382f),
+														FoodEntity("asdf",382f),
+														FoodEntity("qwer",382f)))
+											}
                                         }
                                     }
                                 }
@@ -83,20 +97,16 @@ abstract class AppDatabase : RoomDatabase()
                 RecommendDietEntity(R.drawable.recommend1,"오트밀 20g, 바나나 100g, 사과 125g, 우유 200ml",345),
                 RecommendDietEntity(R.drawable.recommend2,"현미밥 70g, 미역국 300g, 배추김치 50g, 가자미구이 50g",207),
                 RecommendDietEntity(R.drawable.recommend3,"삶은 달걀 100g, 찐 고구마 200g, 닭가슴살 샐러드 100g",448),
-			    RecommendDietEntity(R.drawable.recommend3,"잡곡밥 75g, 맑은 두붓국 200g, 배추김치 50g, 미역줄기 무침 50g, 장조림 50g", 274),
-			    RecommendDietEntity(R.drawable.recommend3,"콩밥 75g, 버섯전골 250g, 나물 50g", 224),
-			    RecommendDietEntity(R.drawable.recommend3,"바나나 100g, 씨리얼 한 줌 30g, 우유 200ml", 326),
-			    RecommendDietEntity(R.drawable.recommend3,"찐 고구마 200g, 삶은 달걀 100g, 과일 요거트 샐러드 150g", 403),
-			    RecommendDietEntity(R.drawable.recommend3,"닭가슴살 샐러드 100g, 사과 125g, 포도 100g, 요거트 70g", 293),
-			    RecommendDietEntity(R.drawable.recommend3,"계란 스크램블 100g, 사과 125g, 저지방 우유 200ml, 아몬드 6g", 317),
-			    RecommendDietEntity(R.drawable.recommend3,"파프리카 100g, 느타리 버섯볶음 100g, 삶은 양배추 100g, 닭가슴살구이 100g", 293)
+			    RecommendDietEntity(R.drawable.recommend4,"잡곡밥 75g, 맑은 두붓국 200g, 배추김치 50g, 미역줄기 무침 50g, 장조림 50g", 274),
+			    RecommendDietEntity(R.drawable.recommend5,"콩밥 75g, 버섯전골 250g, 나물 50g", 224),
+			    RecommendDietEntity(R.drawable.recommend6,"바나나 100g, 씨리얼 한 줌 30g, 우유 200ml", 326),
+			    RecommendDietEntity(R.drawable.recommend7,"찐 고구마 200g, 삶은 달걀 100g, 과일 요거트 샐러드 150g", 403),
+			    RecommendDietEntity(R.drawable.recommend8,"닭가슴살 샐러드 100g, 사과 125g, 포도 100g, 요거트 70g", 293),
+			    RecommendDietEntity(R.drawable.recommend9,"계란 스크램블 100g, 사과 125g, 저지방 우유 200ml, 아몬드 6g", 317),
+			    RecommendDietEntity(R.drawable.recommend10,"파프리카 100g, 느타리 버섯볶음 100g, 삶은 양배추 100g, 닭가슴살구이 100g", 293)
 			    )
 
 	    private fun getRecommendWorkoutList()=arrayOf(
-			    RecommendWorkoutEntity("abcd","seaf",382f,R.drawable.workout1),
-			    RecommendWorkoutEntity("asdf","saef",382f,R.drawable.workout1),
-			    RecommendWorkoutEntity("qwer","saef",382f,R.drawable.workout1),
-
 			    RecommendWorkoutEntity("걷기","운동으로서의 걷기는 자연스럽고 편안하게 하되, 천천히 걷기부터 시작하여 경쾌하면서도 약간 빠르게 해야 효과가 있다.\\n 약간 빠르게 30분120칼로리",120f,R.drawable.workout1),
 			    RecommendWorkoutEntity("달리기 (조깅)","조깅은 일반적으로 시속 8km 정도의 속도로 달리는 것을 말한다. 운동 초기에는 운동시간을 짧게 하고, 점차적으로 거리와 시간을 늘리면서 걷기와 조깅을 번갈아 실시해야 한다.\n가볍게 30분 189Kcal",189f,R.drawable.workout2),
 			    RecommendWorkoutEntity("계단 오르기 (걷기)","배에 힘을 주어 허리를 곧게 편 상태를 유지한다.\n가볍게 30분 189Kcal",189f,R.drawable.workout3),
@@ -124,10 +134,6 @@ abstract class AppDatabase : RoomDatabase()
 			    )
 
 	    fun getFoodList()= arrayOf(
-			    FoodEntity("abcd",382f),
-			    FoodEntity("asdf",382f),
-			    FoodEntity("qwer",382f),
-
 			    FoodEntity("오트밀",382f),
 			    FoodEntity("녹두 가공(면류), 녹두국수 ",345f),
 			    FoodEntity("대두 가공(과자류), 엿강정 ",135.3f),

@@ -48,26 +48,25 @@ class NoonBodyActivity : AppCompatActivity()
 		override fun onBindViewHolder(holder: NoonBodyViewHolder, position: Int)=
 				holder.bind(get(position))
 
-		inner class NoonBodyViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer, View.OnClickListener
-		{
-            val iv_thumbnail=containerView.findViewById<ImageView>(R.id.iv_thumbnail)
-			init {
-				containerView.setOnClickListener(this)
-			}
+		inner class NoonBodyViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer, View.OnClickListener {
+            val iv_thumbnail = containerView.findViewById<ImageView>(R.id.iv_thumbnail)
 
-			fun bind(uri: Uri) {
-				Glide.with(itemView.context)
-						.load(uri)
-						.thumbnail(0.1f)
-						.apply(RequestOptions().centerCrop()
-								.placeholder(gun0912.tedbottompicker.R.drawable.ic_gallery)
-								.error(gun0912.tedbottompicker.R.drawable.img_error))
-						.into(iv_thumbnail)
-			}
+            init {
+                containerView.setOnClickListener(this)
+            }
 
-			override fun onClick(v: View?) {
+            fun bind(uri: Uri) {
+                    Glide.with(itemView.context)
+                            .load(uri)
+                            .thumbnail(0.1f)
+                            .apply(RequestOptions().centerCrop()
+                                    .placeholder(gun0912.tedbottompicker.R.drawable.ic_gallery)
+                                    .error(gun0912.tedbottompicker.R.drawable.img_error))
+                            .into(iv_thumbnail)
+        }
+
+			override fun onClick(v: View?) =
 				startGalleryActivity(this@NoonBodyAdapter,adapterPosition)
-			}
 		}
 	}
 }

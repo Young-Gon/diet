@@ -38,7 +38,7 @@ class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
         CLog.v("appendItem",5)
 	    if (size == 0) {
 		    addAll(list)
-		    notifyItemRangeChanged(0,size)
+		    notifyItemRangeChanged(0,list.size)
 		    return
 	    }
 	    ioThread {
@@ -58,6 +58,8 @@ class ArrayListRecyclerViewAdapter<VH : ViewBinder<ITEM>, ITEM>(
 	            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
 	                val newProduct = list.get(newItemPosition)
 	                val oldProduct = get(oldItemPosition)
+					CLog.d(newProduct.toString() + ", " + oldProduct.toString())
+
 	                return newProduct?.equals(oldProduct)?:false
 	            }
 	        })

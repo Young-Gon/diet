@@ -38,7 +38,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/shape_round_rect_gray"
-                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/if_pomegranate"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"

@@ -77,7 +77,14 @@ class WorkoutActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 		recyclerView.adapter=adapter
 		workoutViewModel.findWorkoutByID(workEntity.id)
 		workoutViewModel.observe(this, Observer {it?.let {
-			adapter.appendItem(it)
+			CLog.d("$it")
+			//adapter.appendItem(it)
+			with(adapter) {
+				if (size == 0) {
+					addAll(it)
+					notifyItemRangeChanged(0, it.size)
+				}
+			}
 		}})
 	}
 
@@ -188,8 +195,9 @@ class WorkoutActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 				.show()
 	}
 
-	fun addToList(item: RecommendWorkoutEntity) {
+	private fun addToList(item: RecommendWorkoutEntity) {
 		searchView.setText("")
+		CLog.d(item.name)
 		WorkoutWithRecommend(WorkoutRelationshipEntity(workEntity.id,item.id),item).apply {
 			adapter.indexOf(this).let{index->
 				if(index==-1) {

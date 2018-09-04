@@ -21,6 +21,30 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer"/>
+        app:menu="@menu/activity_main_drawer">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="bottom|end"
+            android:orientation="vertical"
+            android:padding="8dp">
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/gov_logo1"/>
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/gov_logo2"/>
+
+            <TextView
+                android:id="@+id/appVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                tools:text="ver. 1.0.0" />
+        </LinearLayout>
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

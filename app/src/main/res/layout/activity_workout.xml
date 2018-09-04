@@ -83,7 +83,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"
-        android:text="TextView"
+        android:text="총 칼로리: 0Kcal"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/searchView"

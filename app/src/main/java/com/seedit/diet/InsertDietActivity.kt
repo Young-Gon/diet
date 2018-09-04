@@ -67,7 +67,14 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 	    foodViewModel=getViewModel(FoodViewModel::class.java)
 	    foodViewModel.findDietFoodByDietID(dietEntity.id)
 	    foodViewModel.observe(this, Observer {it?.let {
-		    adapter.appendItem(it)
+			CLog.d("$it")
+		    //adapter.appendItem(it)
+			with(adapter) {
+				if (size == 0) {
+					addAll(it)
+					notifyItemRangeChanged(0, it.size)
+				}
+			}
 	    }})
 
 	    updateFoodEntity()
@@ -100,7 +107,6 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 		}
 
 		spinnerDietCategory.setSelection(dietEntity.category.ordinal)
-
 	}
 
 	private fun updateCalorie()
@@ -202,6 +208,7 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 
 	private fun addToList(item: FoodEntity) {
 		searchView.setText("")
+		CLog.d(item.name)
 		//foodViewModel.insertDietFoodRelationship(dietEntity,item,1)
 		DietWithFood(DietFoodRelationEntity(dietEntity.id,item._id,1),item).apply {
 			adapter.indexOf(this).let {index->

@@ -46,16 +46,33 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".WorkoutActivity">
+        <activity android:name=".WorkoutActivity"
+            android:label="운동 추가"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
         </activity>
         <activity android:name=".AnalyzeDietActivity"
-                  android:label="다이어트 분석">
+                  android:label="다이어트 분석"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
         </activity>
         <activity android:name=".NoonBodyActivity"
-                  android:label="눈 바디">
+                  android:label="눈 바디"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
         </activity>
         <activity android:name=".GalleryActivity"
-                  android:label="눈 바디">
+                  android:label="눈 바디"
+            android:parentActivityName=".NoonBodyActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".NoonBodyActivity"/>
         </activity>
     </application>
 

@@ -78,13 +78,12 @@
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
         android:gravity="center_vertical"
-        android:text="TextView"
+        android:text="총 칼로리: 0Kcal"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/spinnerDietCategory"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/spinnerDietCategory"
-        tools:text="총 칼로리: 2,400Kcal"/>
+        app:layout_constraintTop_toTopOf="@+id/spinnerDietCategory"/>
 
     <ImageView
         android:id="@+id/imageView"

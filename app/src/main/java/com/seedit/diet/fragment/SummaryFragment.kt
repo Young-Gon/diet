@@ -31,7 +31,6 @@ import com.gondev.clog.CLog
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import com.seedit.diet.BuildConfig
-import com.seedit.diet.MainActivity
 import com.seedit.diet.MyInfoActivity
 import com.seedit.diet.R
 import com.seedit.diet.database.entity.BodyEntity
@@ -130,9 +129,12 @@ class SummaryFragment:BaseFragment() {
 	private fun setChartData(chart: BarChart, data1: Float, data2: Float) =with(chart){
 		if (data == null) {
 			setDrawGridBackground(false)
-			setPinchZoom(false)
 			setDrawBarShadow(false)
 			setDrawValueAboveBar(true)
+			setPinchZoom(false)
+			setScaleEnabled(false)
+			setDoubleTapToZoomEnabled(false)
+
 			description.isEnabled = false
 
 			xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -185,9 +187,9 @@ class SummaryFragment:BaseFragment() {
 	}
 
 	@SuppressLint("ResourceType")
-	override fun onContentViewCreated(v: View, calendar: Calendar) {
+	override fun onContentViewCreated(view: View, calendar: Calendar) {
 		// TODO 날짜 변경시 써머리 변경
-		v.nestedScrollView.isNestedScrollingEnabled=true
+		view.nestedScrollView.isNestedScrollingEnabled=true
 		updateSummary(calendar)
 
 		setChartLegend(R.id.chartDiet).setOnClickListener {
@@ -198,19 +200,19 @@ class SummaryFragment:BaseFragment() {
 
 		}
 		setChartLegend(R.id.chartWater).setOnClickListener {
-			val view= LayoutInflater.from(context).inflate(R.layout.alert_request_calorie,null)
-			view.txtUnit.text="ml"
+			val alertView= LayoutInflater.from(context).inflate(R.layout.alert_request_calorie,null)
+			alertView.txtUnit.text="ml"
 			AlertDialog.Builder(this.context!!)
 					.setTitle("수분 섭취랑")
 					.setMessage("오늘의 수분 섭취량을 추가해 주세요.")
-					.setView(view)
+					.setView(alertView)
 					.setPositiveButton(android.R.string.ok) { dialogInterface, i: Int ->
-						if(view.editCalorie.length()==0) {
+						if(alertView.editCalorie.length()==0) {
 							return@setPositiveButton
 						}
 
 						//summaryViewModel.insertWater(sdf.format(getCurrentCalender().timeInMillis),v.editCalorie.text.toString().toInt())
-						body?.water=view.editCalorie.text.toString().toInt()
+						body?.water=alertView.editCalorie.text.toString().toInt()
 						summaryViewModel.insertBody(body!!)
 					}.show()
 		}
@@ -365,7 +367,7 @@ class SummaryFragment:BaseFragment() {
 							  |BMI: ${BMI.toInt()}""".trimMargin()
 		getAttachView().txtSummaryRight.text="""감량 목표: $targetWeight Kg
 							   |현재: $marginWeight Kg
-							   |달성율: $weightPercentage%""".trimMargin()
+							   |달성율: ${weightPercentage.format(2)}%""".trimMargin()
 	}
 
 	fun openImagePicker() {
@@ -382,3 +384,5 @@ class SummaryFragment:BaseFragment() {
 		bottomSheetDialogFragment.show(childFragmentManager)
 	}
 }
+
+fun Float.format(digits: Int) = java.lang.String.format("%.${digits}f", this)

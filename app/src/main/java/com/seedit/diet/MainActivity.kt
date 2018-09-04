@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
         tabbar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         profileMenu.setNavigationItemSelectedListener(this)
+        appVersion.setText("Ver. ${BuildConfig.VERSION_NAME}")
     }
 
     override fun onBackPressed() {
@@ -110,24 +111,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
     override fun setCurrentPage(page: Int) {
         container.setCurrentItem(page,true)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
-        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -143,9 +128,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(Intent(this,NoonBodyActivity::class.java))
             }
 	        R.id.nab_community -> {
-
-	        }
-	        R.id.nav_help -> {
 
 	        }
         }

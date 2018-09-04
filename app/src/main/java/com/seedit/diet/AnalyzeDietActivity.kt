@@ -85,6 +85,11 @@ class AnalyzeDietActivity : AppCompatActivity()
 	}
 
 	private fun setChart(lineChart: LineChart) = with(lineChart) {
+		setDrawGridBackground(false)
+		setPinchZoom(false)
+		setScaleEnabled(false)
+		setDoubleTapToZoomEnabled(false)
+
 		xAxis.granularity=1f
 		xAxis.labelCount=5
 		xAxis.setValueFormatter { value, axis ->

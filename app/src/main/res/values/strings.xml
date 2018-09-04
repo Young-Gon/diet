@@ -1,17 +1,13 @@
 <resources>
-    <string name="app_name">diet</string>
+    <string name="app_name">다이어트 다이어리</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">알 수 없는 사용자</string>
+    <string name="nav_header_subtitle">프로필을 설정해 주세요</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_tab">TabActivity</string>
     <string name="title_home">요약</string>
     <string name="title_dashboard">식사</string>
     <string name="title_notifications">운동</string>
-    <string name="title_activity_page">PageActivity</string>
-    <string name="section_format">Hello World from section: %1$d</string>
 
     <string-array name="string_array_gender">
         <item>남</item>
