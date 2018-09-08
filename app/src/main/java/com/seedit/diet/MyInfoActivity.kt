@@ -12,6 +12,7 @@ import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import android.util.TypedValue
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -129,7 +130,7 @@ class MyInfoActivity : AppCompatActivity() {
             val dpd = DatePickerDialog.newInstance(
                     object :DatePickerDialog.OnDateSetListener{
                         override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-                            (it as EditText).text= SpannableStringBuilder(String.format("%d년 %d월 %d일",year,monthOfYear,dayOfMonth))
+	                        (it as EditText).text= SpannableStringBuilder(String.format("%d년 %d월 %d일",year,monthOfYear+1,dayOfMonth))
 
                             Calendar.getInstance().apply {
                                 set(year, monthOfYear, dayOfMonth)
@@ -235,6 +236,19 @@ class MyInfoActivity : AppCompatActivity() {
                 .create()
 
         bottomSheetDialogFragment.show(supportFragmentManager)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    {
+        when (item.getItemId())
+        {
+            android.R.id.home ->
+            {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {

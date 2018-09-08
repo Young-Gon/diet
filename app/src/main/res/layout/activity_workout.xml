@@ -15,9 +15,10 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/shape_round_rect_gray"
         android:onClick="onClickWorkoutImage"
+        android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/if_pomegranate"/>
+        app:srcCompat="@drawable/exercises_empty" />
 
     <EditText
         android:id="@+id/editWorkoutName"
@@ -26,20 +27,22 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:hint="오늘의 운동"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgWorkoutPicture"
-        app:layout_constraintTop_toTopOf="@+id/imgWorkoutPicture"/>
+        app:layout_constraintTop_toTopOf="@+id/imgWorkoutPicture" />
 
     <AutoCompleteTextView
         android:id="@+id/searchView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:completionThreshold="1"
         android:queryHint="음식 검색"
         app:layout_constraintEnd_toEndOf="@+id/addWorkoutEntity"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/imgWorkoutPicture"/>
+        app:layout_constraintTop_toBottomOf="@+id/txtTotalCal" />
 
     <ImageButton
         android:id="@+id/addWorkoutEntity"
@@ -78,28 +81,26 @@
     <TextView
         android:id="@+id/txtTotalCal"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:text="총 칼로리: 0Kcal"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/searchView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editWorkoutName"
-        tools:text="총 칼로리: 2,400Kcal"/>
+        tools:text="총 칼로리: 2,400Kcal" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/searchView"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgWorkoutPicture"
         app:layout_constraintTop_toTopOf="@+id/searchView"
-        app:srcCompat="@drawable/ic_search"/>
+        app:srcCompat="@drawable/ic_search" />
 </android.support.constraint.ConstraintLayout>

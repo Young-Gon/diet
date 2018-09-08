@@ -12,7 +12,7 @@ import android.arch.persistence.room.Index
 						ForeignKey(entity = FoodEntity::class, parentColumns = ["_id"], childColumns = ["foodId"])])
 data class DietFoodRelationEntity(
 		var dietId:Long,
-		val foodId:Long,
+		var foodId:Long,
 		var foodCount:Int/*,
 		@PrimaryKey(autoGenerate = true)
 		val id: Long=0*/)
@@ -36,6 +36,11 @@ data class DietWithFood(
 		var result = dietFood.hashCode()
 		result = 31 * result + food.hashCode()
 		return result
+	}
+
+	override fun toString(): String
+	{
+		return "dietId=${dietFood.dietId}, dietFood.foodId=${dietFood.foodId}, food._id=${food._id}"
 	}
 }
 /*

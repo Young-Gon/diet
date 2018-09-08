@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(Intent(this,NoonBodyActivity::class.java))
             }
 	        R.id.nab_community -> {
-
+                startActivity(Intent(this,WebViewActivity::class.java))
 	        }
         }
 

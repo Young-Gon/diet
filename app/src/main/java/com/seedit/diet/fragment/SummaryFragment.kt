@@ -221,6 +221,7 @@ class SummaryFragment:BaseFragment() {
 		val lineChart=getAttachView().findViewById<LineChart>(R.id.chartWeightLine)
 		lineChart.xAxis.granularity=1f
 		lineChart.xAxis.labelCount=5
+
 		lineChart.xAxis.setValueFormatter { value, axis ->
 			CLog.d(sdf.format(Date(value.toLong())))
 			sdf.format(Date(value.toLong()))
@@ -229,9 +230,6 @@ class SummaryFragment:BaseFragment() {
 		lineChart.legend.orientation=Legend.LegendOrientation.HORIZONTAL
 		lineChart.legend.formSize=0f
 		lineChart.legend.textSize=16f
-
-		lineChart.axisLeft.axisMinimum = 0f // this replaces setStartAtZero(true)
-		lineChart.axisRight.axisMinimum = 0f // this replaces setStartAtZero(true)
 
 		if(::summaryViewModel.isInitialized) {
 			summaryViewModel.findDiet(calendar)
@@ -316,7 +314,7 @@ class SummaryFragment:BaseFragment() {
 				.thumbnail(0.1f)
 				.apply (RequestOptions()
 						.centerCrop()
-						.error(R.drawable.if_pomegranate))
+						.error(R.drawable.waist))
 				.into(imgNoonBody)
 
 		imgNoonBody.clipToOutline=true

@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -41,7 +42,7 @@ fun Context.startWorkoutActivity(workoutEntity: WorkoutEntity= WorkoutEntity())=
 				.putExtra(INTENT_KEY_ENTITY,workoutEntity))
 
 fun Context.startWorkoutActivity(createAt: Calendar) =
-		startActivity(Intent(this, InsertDietActivity::class.java)
+		startActivity(Intent(this, WorkoutActivity::class.java)
 				.putExtra(INTENT_KEY_CREATE_AT, createAt.timeInMillis))
 
 private const val INTENT_KEY_ENTITY = "entity"
@@ -121,7 +122,7 @@ class WorkoutActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 				.thumbnail(0.1f)
 				.apply(RequestOptions()
 						.centerCrop()
-						.error(R.drawable.if_pomegranate))
+						.error(R.drawable.exercises_empty))
 				.into(imgWorkoutPicture)
 
 		txtTotalCal.text=String.format("총 칼로리: %,dKcal",workEntity.calorie.toInt())
@@ -155,7 +156,7 @@ class WorkoutActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 								.thumbnail(0.1f)
 								.apply (RequestOptions()
 										.centerCrop()
-										.error(R.drawable.if_pomegranate))
+										.error(R.drawable.exercises_empty))
 								.into(imgWorkoutPicture)
 
 						workEntity.picture=uri

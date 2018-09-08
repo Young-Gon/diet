@@ -6,19 +6,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/user"
             android:title="내 프로필"/>
         <item
             android:id="@+id/nav_Analyze_diet"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/analyze"
             android:title="다이어트 분석"/>
         <item
             android:id="@+id/nav_noon_body"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_waist"
             android:title="눈 바디"/>
         <item
             android:id="@+id/nab_community"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/myspace"
             android:title="커뮤니티"/>
     </group>
 </menu>

@@ -9,8 +9,8 @@ android {
         applicationId "com.seedit.diet"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName '0.1.2'
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -39,6 +39,8 @@ android {
         experimental = true
     }
     buildToolsVersion '27.0.3'
+    productFlavors {
+    }
 }
 
 dependencies {
@@ -94,5 +96,6 @@ dependencies {
     // https://github.com/Piasy/BigImageViewer
     implementation 'com.github.piasy:BigImageViewer:1.5.1'
     implementation 'com.github.piasy:GlideImageLoader:1.5.1'
+    implementation 'com.github.piasy:GlideImageViewFactory:1.5.1'
     //implementation 'com.github.stfalcon:frescoimageviewer:0.5.0'
 }

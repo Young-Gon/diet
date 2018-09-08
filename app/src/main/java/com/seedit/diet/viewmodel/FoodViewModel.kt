@@ -22,7 +22,7 @@ class FoodViewModel(application: Application,database: AppDatabase) : AndroidVie
 	private lateinit var observable: LiveData<List<DietWithFood>>
 	private var mediatorLiveData = MediatorLiveData<List<DietWithFood>>()
 
-	override fun findCursor(keyword: String) = foodDao.find(keyword)
+	override fun findCursor(keyword: String) = foodDao.find("%$keyword%")
 
 	fun findDietFoodByDietID(dietID:Long)
 	{
@@ -40,6 +40,7 @@ class FoodViewModel(application: Application,database: AppDatabase) : AndroidVie
 	@Transaction
 	fun insert(entity: FoodEntity)= ioThread {
 		entity._id=foodDao.insertAll(arrayOf(entity))[0]
+		CLog.d("entity._id=${entity._id}")
 	}
 
 	@Transaction
@@ -85,9 +86,16 @@ class FoodViewModel(application: Application,database: AppDatabase) : AndroidVie
 
 	@Transaction
 	fun insert(dietEntity: DietEntity, list: List<DietWithFood>) = ioThread {
+		CLog.d("list.size=${list.size}")
+		list.forEach {
+			CLog.d(it.toString())
+		}
 		dietDao.insert(dietEntity).let {id->
 			dietFoodDao.insertAll(list.map {
-				it.dietFood.apply { dietId=id }
+				it.dietFood.apply {
+					dietId=id
+					foodId=it.food._id
+				}
 			})
 		}
 	}

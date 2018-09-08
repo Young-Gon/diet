@@ -12,7 +12,7 @@ import android.arch.persistence.room.Index
 		indices = [Index(value = ["workoutID"]),Index(value = ["recommendWorkoutID"])])
 data class WorkoutRelationshipEntity (
 		var workoutID:Long,
-		val recommendWorkoutID:Long,
+		var recommendWorkoutID:Long,
 		var time:Int=30
 )
 

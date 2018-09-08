@@ -8,10 +8,13 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.piasy.biv.BigImageViewer
 import com.github.piasy.biv.loader.glide.GlideImageLoader
+import com.github.piasy.biv.view.GlideImageViewFactory
+import com.github.piasy.biv.view.ImageViewFactory
 import com.github.rubensousa.gravitysnaphelper.GravityPagerSnapHelper
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_gallery.*
@@ -38,14 +41,17 @@ class GalleryActivity : AppCompatActivity()
 		recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 		recycler.adapter = GalleryAdapter(imageUrlsList)
 
-		val gravityPagerSnapHelper = GravityPagerSnapHelper(Gravity.START, true)
-		gravityPagerSnapHelper.attachToRecyclerView(recycler)
+		GravityPagerSnapHelper(Gravity.START, true).attachToRecyclerView(recycler)
 	}
 
 	class GalleryAdapter(imageUrlsList: List<Uri>): RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder>(), List<Uri> by imageUrlsList
 	{
+		private val  viewFactory=GlideImageViewFactory()
+
 		override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)=
-			GalleryViewHolder(View.inflate(parent.context, R.layout.item_gallery_view, null))
+			GalleryViewHolder(/*View.inflate(parent.context, R.layout.item_gallery_view, parent,false)*/
+					LayoutInflater.from(parent.context)
+							.inflate(R.layout.item_gallery_view, parent, false),viewFactory)
 
 		override fun getItemCount()=size
 
@@ -62,19 +68,20 @@ class GalleryActivity : AppCompatActivity()
 				holder.rebind()
 		}
 
-		class GalleryViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
+		class GalleryViewHolder(override val containerView: View, viewFactory: ImageViewFactory) : RecyclerView.ViewHolder(containerView), LayoutContainer
 		{
 			private lateinit var imageUrl: Uri
 
 			init {
 				//itemImage.setProgressIndicator(ProgressPieIndicator())
 				itemImage.setTapToRetry(true)
-				//itemImage.setImageViewFactory(viewFactory)
+				itemImage.setImageViewFactory(viewFactory)
 			}
 
 			fun bind(imageUrl: Uri) {
 				this.imageUrl=imageUrl
 				itemImage.showImage(imageUrl)
+				itemImage.setTapToRetry(true)
 			}
 
 			fun rebind() {

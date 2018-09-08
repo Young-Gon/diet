@@ -59,7 +59,7 @@ class WorkoutFragment:BaseFragment()
 		viewModel.find(calendar)
 
 		view.recommendPicture.clipToOutline=true
-		view.fab.setOnClickListener { it.context.startWorkoutActivity() }
+		view.fab.setOnClickListener { it.context.startWorkoutActivity(getCurrentCalender()) }
     }
 
 	class WorkoutViewBinder(containerView: View) : ViewBinder<WorkoutEntity>(containerView)
@@ -71,7 +71,7 @@ class WorkoutFragment:BaseFragment()
 					.apply(RequestOptions()
 							.centerCrop()
 							.placeholder(gun0912.tedbottompicker.R.drawable.ic_gallery)
-							.error(R.drawable.if_apple))
+							.error(R.drawable.basketball))
 					.into(imgFood)
 
 			txtCategory.text=item.title

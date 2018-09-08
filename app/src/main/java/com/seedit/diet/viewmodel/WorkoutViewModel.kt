@@ -19,7 +19,7 @@ class WorkoutViewModel(application: Application,database: AppDatabase) : Android
 	private lateinit var observable: LiveData<List<WorkoutWithRecommend>>
 	private var mediatorLiveData = MediatorLiveData<List<WorkoutWithRecommend>>()
 
-	override fun findCursor(keyword: String): List<RecommendWorkoutEntity> =recommendWorkoutDao.find(keyword)
+	override fun findCursor(keyword: String): List<RecommendWorkoutEntity> =recommendWorkoutDao.find("%$keyword%")
 
 	fun findWorkoutByID(id: Long){
 		if(::observable.isInitialized)
@@ -41,7 +41,10 @@ class WorkoutViewModel(application: Application,database: AppDatabase) : Android
 	fun insert(workEntity: WorkoutEntity, list: List<WorkoutWithRecommend>) = ioThread {
 		workoutDao.insert(workEntity).let {id->
 			workoutRelationshipDao.insertAll(list.map {
-				it.relationship.apply { workoutID=id }
+				it.relationship.apply {
+					workoutID=id
+					recommendWorkoutID=it.recommendWorkoutEntity.id
+				}
 			})
 		}
 	}

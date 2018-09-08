@@ -195,7 +195,7 @@ class InsertDietActivity : AppCompatActivity(), KeyboardNumberPickerHandler
 			.setPositiveButton(android.R.string.ok) { dialogInterface, i: Int ->
 
 				if (view.editCalorie.length() == 0) {
-					Toast.makeText(this@InsertDietActivity, "운동량을 입력해 주세요", Toast.LENGTH_SHORT).show()
+					Toast.makeText(this@InsertDietActivity, "칼로리를 입력해 주세요", Toast.LENGTH_SHORT).show()
 					return@setPositiveButton
 				}
 				val item=FoodEntity(searchView.text.toString(),view.editCalorie.text.toString().toFloat())
