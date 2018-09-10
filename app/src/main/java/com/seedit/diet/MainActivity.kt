@@ -1,6 +1,7 @@
 package com.seedit.diet
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -130,6 +132,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 	        R.id.nab_community -> {
                 startActivity(Intent(this,WebViewActivity::class.java))
 	        }
+            R.id.nab_init_db->{
+                AlertDialog.Builder(this).setMessage("데이터를 초기화 하시겠습니까?")
+                        .setPositiveButton(android.R.string.yes) { dialogInterface, i ->
+                            viewModel.deleteAllData()
+                        }.setNegativeButton(android.R.string.no,null)
+                        .show()
+            }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)

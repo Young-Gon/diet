@@ -21,4 +21,7 @@ interface RecommendDietRelationshipDao
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(profile: RecommendDietRelationshipEntity):Long
+
+	@Query("DELETE FROM recommendDietRelationship")
+	fun deleteAll()
 }

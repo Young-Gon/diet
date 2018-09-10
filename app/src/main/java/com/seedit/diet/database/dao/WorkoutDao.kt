@@ -34,4 +34,7 @@ interface WorkoutDao
 			GROUP BY date(createAt/1000,'unixepoch')
 			ORDER BY createAt ASC""")
 	fun findCalorieDietWorkout(): LiveData<List<DietCaloriesPOJO>>
+
+	@Query("DELETE FROM workout")
+	fun deleteAll()
 }

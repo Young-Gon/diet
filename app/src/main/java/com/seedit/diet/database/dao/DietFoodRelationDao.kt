@@ -21,6 +21,6 @@ interface DietFoodRelationDao
 	@Update
 	fun update(dietFoodRelationEntity: DietFoodRelationEntity)
 
-	/*@Delete
-	fun delete(dietFood: DietFoodRelationEntity)*/
+	@Query("DELETE FROM dietfood")
+	fun deleteAll()
 }

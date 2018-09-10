@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
-  <com.github.piasy.biv.view.BigImageView
-      android:id="@+id/itemImage"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      app:failureImageInitScaleType="center"
-      app:initScaleType="fitCenter"
-      app:optimizeDisplay="true"/>
-
-</LinearLayout>
+<com.github.piasy.biv.view.BigImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/itemImage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    app:failureImageInitScaleType="center"
+    app:initScaleType="fitCenter"
+    app:optimizeDisplay="true"/>

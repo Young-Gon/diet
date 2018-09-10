@@ -31,4 +31,7 @@ interface DietDao {
 
 	@Query("SELECT sum(calorie) as calorie, createAt FROM diet GROUP BY date(createAt/1000,'unixepoch') ORDER BY createAt ASC")
 	fun findCaloriesGroupByDate(): LiveData<List<DietCaloriesPOJO>>
+
+	@Query("DELETE FROM diet")
+	fun deleteAll()
 }

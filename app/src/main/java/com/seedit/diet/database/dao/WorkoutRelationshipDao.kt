@@ -16,4 +16,7 @@ interface WorkoutRelationshipDao
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	fun insertAll(workoutRelationshipList: List<WorkoutRelationshipEntity>)
+
+	@Query("DELETE FROM workoutRelationship")
+	fun deleteAll()
 }

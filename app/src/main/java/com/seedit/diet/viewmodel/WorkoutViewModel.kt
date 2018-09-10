@@ -13,7 +13,7 @@ import com.seedit.diet.util.ioThread
 class WorkoutViewModel(application: Application,database: AppDatabase) : AndroidViewModel(application), DataSet<RecommendWorkoutEntity>
 {
 	private val recommendWorkoutDao=database.recommendWorkoutDao()
-	private val workoutRelationshipDao=database.workoutRelationship()
+	private val workoutRelationshipDao=database.workoutRelationshipDao()
 	private val workoutDao=database.workoutDao()
 
 	private lateinit var observable: LiveData<List<WorkoutWithRecommend>>

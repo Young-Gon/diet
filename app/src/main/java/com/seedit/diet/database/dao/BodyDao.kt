@@ -24,4 +24,7 @@ interface BodyDao {
 
 	@Query("SELECT * FROM body order by date ASC")
 	fun findRx(): Flowable<List<BodyEntity>>
+
+	@Query("DELETE FROM body")
+	fun deleteAll()
 }

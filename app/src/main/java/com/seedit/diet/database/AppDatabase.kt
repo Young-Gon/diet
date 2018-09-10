@@ -44,7 +44,7 @@ abstract class AppDatabase : RoomDatabase()
 	abstract fun recommendWorkoutDao(): RecommendWorkoutDao
 	abstract fun recommendWorkoutRelationshipDao(): RecommendWorkoutRelationshipDao
 	abstract fun workoutDao(): WorkoutDao
-	abstract fun workoutRelationship(): WorkoutRelationshipDao
+	abstract fun workoutRelationshipDao(): WorkoutRelationshipDao
 	abstract fun bodyDao():BodyDao
 
 	companion object

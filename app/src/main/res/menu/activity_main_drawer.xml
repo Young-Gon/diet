@@ -20,5 +20,9 @@
             android:id="@+id/nab_community"
             android:icon="@drawable/myspace"
             android:title="커뮤니티"/>
+        <item
+            android:id="@+id/nab_init_db"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="초기화"/>
     </group>
 </menu>

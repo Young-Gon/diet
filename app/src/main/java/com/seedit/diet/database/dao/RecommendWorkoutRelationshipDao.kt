@@ -17,4 +17,7 @@ interface RecommendWorkoutRelationshipDao {
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	fun insert(recommendWorkoutRelationshipEntity: RecommendWorkoutRelationshipEntity)
+
+	@Query("DELETE FROM recommendWorkoutRelationship")
+	fun deleteAll()
 }

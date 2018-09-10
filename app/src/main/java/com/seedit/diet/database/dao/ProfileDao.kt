@@ -24,4 +24,7 @@ interface ProfileDao {
 
     @Query("SELECT * FROM profile")
     fun findRx(): Flowable<ProfileEntity>
+
+    @Query("DELETE FROM profile")
+    fun deleteAll()
 }
