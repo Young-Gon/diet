@@ -5,8 +5,8 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
+import android.arch.persistence.room.migration.Migration
 import android.content.Context
-import android.os.Build
 import com.gondev.clog.CLog
 import com.seedit.diet.BuildConfig
 import com.seedit.diet.R
@@ -32,7 +32,7 @@ import java.util.*
 						WorkoutEntity::class,
 						WorkoutRelationshipEntity::class,
 						BodyEntity::class],
-		version = 1)
+		version = 2)
 abstract class AppDatabase : RoomDatabase()
 {
     abstract fun profileDao(): ProfileDao
@@ -91,6 +91,46 @@ abstract class AppDatabase : RoomDatabase()
                                 }
                             }
                         })
+		                .addMigrations(object :Migration(1,2){
+			                override fun migrate(database: SupportSQLiteDatabase)
+			                {
+				                database.execSQL("""CREATE TABLE `profile_temp` (
+									|`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+									|`profile_image` TEXT,
+									|`name` TEXT NOT NULL,
+									|`gender` INTEGER NOT NULL,
+									|`birthday` INTEGER NOT NULL,
+									|`weight` REAL NOT NULL,
+									|`height` INTEGER NOT NULL,
+									|`targetWeight` INTEGER NOT NULL,
+									|`targetWorkout` INTEGER NOT NULL,
+									|`targetDiet` INTEGER NOT NULL,
+									|`targetWater` INTEGER NOT NULL,
+									|`targetDday` INTEGER NOT NULL,
+									|`startDate` INTEGER NOT NULL)""".trimMargin())
+
+				                database.execSQL("""INSERT INTO profile_temp
+									| SELECT * FROM profile""".trimMargin())
+
+				                database.execSQL("DROP TABLE profile")
+				                database.execSQL("ALTER TABLE profile_temp RENAME TO profile");
+
+				                // modify body column weight type INTEGER to REAL
+				                database.execSQL("""CREATE TABLE `body_temp` (
+									|`date` TEXT NOT NULL,
+									|`weight` REAL NOT NULL,
+									|`water` INTEGER NOT NULL,
+									|`image` TEXT,
+									|`flagWrittenWeight` INTEGER NOT NULL,
+									| PRIMARY KEY(`date`))""".trimMargin())
+
+				                database.execSQL("""INSERT INTO body_temp
+									| SELECT * FROM body""".trimMargin())
+
+				                database.execSQL("DROP TABLE body")
+				                database.execSQL("ALTER TABLE body_temp RENAME TO body");
+			                }
+		                })
                         .build()
 
 	    fun getRecommendDietList()=arrayOf(

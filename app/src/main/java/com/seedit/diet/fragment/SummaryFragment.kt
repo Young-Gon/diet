@@ -93,19 +93,12 @@ class SummaryFragment:BaseFragment() {
 
 		summaryViewModel.findDiet(Calendar.getInstance())
 		summaryViewModel.observeForDiet(this, Observer {
-			it?.let {dietValue->
-				// TODO 식사량 차트 만들기~
-				CLog.v("dietValue=$dietValue")
-				todayDiet=dietValue
-			}
+			todayDiet=it
 			setChartData(getAttachView().findViewById(R.id.chartDiet),profileEntity?.targetDiet?.toFloat()?:0f,todayDiet?:0f)
 		})
 		summaryViewModel.findWorkout(Calendar.getInstance())
 		summaryViewModel.observeForWorkout(this, Observer {
-			it?.let {workoutValue->
-				CLog.v("workoutValue=$workoutValue")
-				todayWorkout=workoutValue
-			}
+			todayWorkout=it
 			setChartData(getAttachView().findViewById(R.id.chartWorkout),profileEntity?.targetWorkout?.toFloat()?:0f,todayWorkout?:0f)
 		})
 	}
@@ -252,7 +245,7 @@ class SummaryFragment:BaseFragment() {
 
 					//입력된 몸무게를 디비에 추가
 					//summaryViewModel.insertWeight(sdf.format(getCurrentCalender().timeInMillis),view.editCalorie.text.toString().toInt())
-					body?.weight=view.editCalorie.text.toString().toInt()
+					body?.weight=view.editCalorie.text.toString().toFloat()
 					body?.flagWrittenWeight=true
 					summaryViewModel.insertBody(body!!)
 				}
@@ -305,7 +298,7 @@ class SummaryFragment:BaseFragment() {
 			it.date == today
 		} ?: BodyEntity(today, bodyEntity.lastOrNull {
 			it.date < today
-		}?.weight?:profileEntity?.weight?:0, 0, null)
+		}?.weight?:profileEntity?.weight?:0f, 0, null)
 
 		val imgNoonBody = getAttachView().findViewById<ImageButton>(R.id.imgNoonbody)
 
@@ -346,7 +339,7 @@ class SummaryFragment:BaseFragment() {
 		if(body.flagWrittenWeight==false)
 			showWeightButton()
 
-		if (body.weight==0) {
+		if (body.weight==0f) {
 			getAttachView().txtSummaryLeft.text="""D-Day: $dday
 							  |몸무게: N/A
 							  |BMI: N/A""".trimMargin()

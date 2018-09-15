@@ -47,7 +47,7 @@ class MyInfoActivity : AppCompatActivity() {
             CLog.i("화면 갱신 profile data size=${it?.size?:0}")
             it?.let {
                 if(it.isEmpty())
-                    viewModel.insert(if(BuildConfig.DEBUG) ProfileEntity(0,null,"test",0,Calendar.getInstance().apply { set(1980,10,17) }.time,80,170,60,400,300,2000,Calendar.getInstance().apply { set(2018,10,17) }.time) else ProfileEntity(0))
+                    viewModel.insert(if(BuildConfig.DEBUG) ProfileEntity(0,null,"test",0,Calendar.getInstance().apply { set(1980,10,17) }.time,80f,170,60,400,300,2000,Calendar.getInstance().apply { set(2018,10,17) }.time) else ProfileEntity(0))
                     //viewModel.insert(ProfileEntity(0))
                 else
                 //if(it.isNotEmpty())
@@ -161,7 +161,7 @@ class MyInfoActivity : AppCompatActivity() {
         {
             override fun afterTextChanged(s: Editable?) {
                 try {
-                    val weight = editWeight.text.toString().toInt()
+                    val weight = editWeight.text.toString().toFloat()
                     val height = editHeight.text.toString().toInt()
 
                     viewModel.getProfile()?.weight=weight
@@ -276,7 +276,7 @@ class MyInfoActivity : AppCompatActivity() {
             showDlg(dlg,"몸무게를",editWeight)
             return
         }
-        viewModel.getProfile()?.weight=editWeight.text.toString().toInt()
+        viewModel.getProfile()?.weight=editWeight.text.toString().toFloat()
         if(editHeight.text.isEmpty())
         {
             showDlg(dlg,"키를",editHeight)

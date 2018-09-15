@@ -8,7 +8,7 @@ import android.net.Uri
 data class BodyEntity(
 		@PrimaryKey
 		var date: String,
-		var weight: Int,
+		var weight: Float,
 		var water: Int,
 		var image: Uri?,
 		var flagWrittenWeight:Boolean=false

@@ -28,9 +28,9 @@ interface WorkoutDao
 	fun findCaloriesGroupByDate(): LiveData<List<DietCaloriesPOJO>>
 
 	@Query("""SELECT sum(calorie) AS calorie, createAt FROM (
-			SELECT diet.calorie AS calorie, diet.createAt AS createAt FROM diet
+		SELECT diet.calorie AS calorie, diet.createAt AS createAt FROM diet
 			UNION
-			SELECT -workout.calorie AS calorie, workout.createAt AS createAt FROM workout)
+		SELECT -workout.calorie AS calorie, workout.createAt AS createAt FROM workout)
 			GROUP BY date(createAt/1000,'unixepoch')
 			ORDER BY createAt ASC""")
 	fun findCalorieDietWorkout(): LiveData<List<DietCaloriesPOJO>>

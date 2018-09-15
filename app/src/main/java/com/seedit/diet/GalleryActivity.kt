@@ -26,7 +26,7 @@ private const val INTENT_KEY_POSITION= "position"
 fun Context.startGalleryActivity(list: List<Uri>, position: Int=0) =
 	startActivity(Intent(this,GalleryActivity::class.java).apply {
 		putExtra(INTENT_KEY_URI_LIST, ArrayList(list))
-		putExtra(INTENT_KEY_POSITION,position)
+		putExtra(INTENT_KEY_POSITION, position)
 	})
 
 class GalleryActivity : AppCompatActivity()
@@ -37,11 +37,13 @@ class GalleryActivity : AppCompatActivity()
 		setContentView(R.layout.activity_gallery)
 
 		val imageUrlsList=intent.getParcelableArrayListExtra<Uri>(INTENT_KEY_URI_LIST)
+		val position=intent.getIntExtra(INTENT_KEY_POSITION,0)
 
 		recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 		recycler.adapter = GalleryAdapter(imageUrlsList)
 
 		GravityPagerSnapHelper(Gravity.START, true).attachToRecyclerView(recycler)
+		recycler.layoutManager.scrollToPosition(position)
 	}
 
 	class GalleryAdapter(imageUrlsList: List<Uri>): RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder>(), List<Uri> by imageUrlsList

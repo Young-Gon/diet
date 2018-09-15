@@ -13,7 +13,7 @@ data class ProfileEntity(
         var name: String="",
         var gender:Int=0,
         var birthday: Date=Date(0),
-        var weight:Int=0,
+        var weight:Float=0f,
         var height: Int=0,
         var targetWeight:Int=0,
         var targetWorkout:Int=0,
