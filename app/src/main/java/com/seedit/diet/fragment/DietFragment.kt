@@ -1,6 +1,7 @@
 package com.seedit.diet.fragment
 
 import android.arch.lifecycle.Observer
+import android.net.Uri
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -28,7 +29,7 @@ class DietFragment:BaseFragment()
         recommendPicture.clipToOutline=true
         //recommendPicture.setImageResource(recommendWithDiet.dietImageRes)
 	    Glide.with(this)
-			    .load(recommendWithDiet.dietImageRes)
+			    .load(Uri.parse("file:///android_asset/${recommendWithDiet.dietImageRes}"))
 			    .thumbnail(0.1f)
 			    .into(recommendPicture)
 

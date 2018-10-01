@@ -8,7 +8,7 @@ data class RecommendWorkoutEntity(
 		override val name:String,
 		val content:String,
 		override val calorie:Float,
-		val imageRes: Int?,
+		val imageRes: String?,
 		@PrimaryKey(autoGenerate = true)
 		val id: Long=0
 ):SearchViewInfo {

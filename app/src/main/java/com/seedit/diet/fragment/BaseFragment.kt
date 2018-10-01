@@ -1,7 +1,6 @@
 package com.seedit.diet.fragment
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
@@ -12,7 +11,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.seedit.diat.util.SimpleAnimationListener
 import com.seedit.diet.R
-import com.seedit.diet.viewmodel.ProfileViewModel
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.fragment_base.*
 import kotlinx.android.synthetic.main.fragment_base.view.*
 import java.text.SimpleDateFormat
@@ -25,7 +24,6 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
 
     private var listener: OnFragmentInteractionListener? = null
     private val sdf=SimpleDateFormat("yyyy년 MM월 dd일")
-    protected lateinit var profileViewModel: ProfileViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
@@ -41,14 +39,35 @@ abstract class BaseFragment : Fragment(), View.OnClickListener {
         btnNext.setOnClickListener(this)
 
         txtDate.text = sdf.format(calendar.time)
+	    txtDate.setOnClickListener(this)
         onContentViewCreated(view,calendar)
     }
 
     override fun onClick(v: View) {
-        when (v.id) {
-            R.id.btnPrev->onClickPrev(v)
-            R.id.btnNext->onClickNext(v)
+        when (v) {
+            btnPrev->onClickPrev(v)
+            btnNext->onClickNext(v)
+            txtDate->openDatePicker()
         }
+    }
+
+    private fun openDatePicker()
+    {
+        DatePickerDialog.newInstance(
+		        { view, year, monthOfYear, dayOfMonth ->
+			        calendar.set(year, monthOfYear, dayOfMonth)
+
+			        txtDate.text = sdf.format(calendar.time)
+
+			        val detachView=fragmentContainer.getChildAt(0)
+			        val attachView=LayoutInflater.from(context).inflate(getContentLayoutRes(),fragmentContainer,false)
+			        fragmentContainer.addView(attachView,0)
+			        onContentViewCreated(attachView, calendar.clone() as Calendar)
+			        fragmentContainer.removeView(detachView)
+		        },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)).show(activity!!.fragmentManager,"TAG")
     }
 
     fun onClickPrev(v:View)

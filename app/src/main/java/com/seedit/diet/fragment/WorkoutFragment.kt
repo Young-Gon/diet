@@ -1,6 +1,7 @@
 package com.seedit.diet.fragment
 
 import android.arch.lifecycle.Observer
+import android.net.Uri
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -26,7 +27,7 @@ class WorkoutFragment:BaseFragment()
 	private fun bindViewWithData(attachView: View, recommendWorkoutEntity: RecommendWorkoutEntity) = with(attachView) {
 		//recommendPicture.setImageResource(recommendWorkoutEntity.imageRes)
 		Glide.with(this)
-				.load(recommendWorkoutEntity.imageRes)
+				.load(Uri.parse("file:///android_asset/${recommendWorkoutEntity.imageRes}"))
 				.thumbnail(0.1f)
 				.into(recommendPicture)
 

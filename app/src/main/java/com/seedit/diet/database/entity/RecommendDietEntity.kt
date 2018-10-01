@@ -5,7 +5,7 @@ import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "recommend_diet")
 data class RecommendDietEntity(
-        val dietImageRes: Int,
+        val dietImageRes: String,
         val dietContent:String,
         val dietCalory:Int,
         @PrimaryKey(autoGenerate = true)

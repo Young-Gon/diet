@@ -5,11 +5,9 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
-import android.arch.persistence.room.migration.Migration
 import android.content.Context
 import com.gondev.clog.CLog
 import com.seedit.diet.BuildConfig
-import com.seedit.diet.R
 import com.seedit.diet.database.converter.DateConverter
 import com.seedit.diet.database.converter.DietCategoryConverter
 import com.seedit.diet.database.converter.UriConverter
@@ -32,7 +30,7 @@ import java.util.*
 						WorkoutEntity::class,
 						WorkoutRelationshipEntity::class,
 						BodyEntity::class],
-		version = 2)
+		version = 1)
 abstract class AppDatabase : RoomDatabase()
 {
     abstract fun profileDao(): ProfileDao
@@ -76,9 +74,9 @@ abstract class AppDatabase : RoomDatabase()
 											foodDao().insertAll(getFoodList())
 											if (BuildConfig.DEBUG) {
 												recommendWorkoutDao().insertAll(arrayOf(
-													RecommendWorkoutEntity("abcd","seaf",382f,R.drawable.workout1),
-													RecommendWorkoutEntity("asdf","saef",382f,R.drawable.workout1),
-													RecommendWorkoutEntity("qwer","saef",382f,R.drawable.workout1)
+													RecommendWorkoutEntity("abcd","seaf",382f,"workout1"),
+													RecommendWorkoutEntity("asdf","saef",382f,"workout1"),
+													RecommendWorkoutEntity("qwer","saef",382f,"workout1")
 												))
 
 												foodDao().insertAll(arrayOf(
@@ -91,7 +89,7 @@ abstract class AppDatabase : RoomDatabase()
                                 }
                             }
                         })
-		                .addMigrations(object :Migration(1,2){
+		                /*.addMigrations(object :Migration(1,2){
 			                override fun migrate(database: SupportSQLiteDatabase)
 			                {
 				                database.execSQL("""CREATE TABLE `profile_temp` (
@@ -130,47 +128,47 @@ abstract class AppDatabase : RoomDatabase()
 				                database.execSQL("DROP TABLE body")
 				                database.execSQL("ALTER TABLE body_temp RENAME TO body");
 			                }
-		                })
+		                })*/
                         .build()
 
 	    fun getRecommendDietList()=arrayOf(
-                RecommendDietEntity(R.drawable.recommend1,"오트밀 20g, 바나나 100g, 사과 125g, 우유 200ml",345),
-                RecommendDietEntity(R.drawable.recommend2,"현미밥 70g, 미역국 300g, 배추김치 50g, 가자미구이 50g",207),
-                RecommendDietEntity(R.drawable.recommend3,"삶은 달걀 100g, 찐 고구마 200g, 닭가슴살 샐러드 100g",448),
-			    RecommendDietEntity(R.drawable.recommend4,"잡곡밥 75g, 맑은 두붓국 200g, 배추김치 50g, 미역줄기 무침 50g, 장조림 50g", 274),
-			    RecommendDietEntity(R.drawable.recommend5,"콩밥 75g, 버섯전골 250g, 나물 50g", 224),
-			    RecommendDietEntity(R.drawable.recommend6,"바나나 100g, 씨리얼 한 줌 30g, 우유 200ml", 326),
-			    RecommendDietEntity(R.drawable.recommend7,"찐 고구마 200g, 삶은 달걀 100g, 과일 요거트 샐러드 150g", 403),
-			    RecommendDietEntity(R.drawable.recommend8,"닭가슴살 샐러드 100g, 사과 125g, 포도 100g, 요거트 70g", 293),
-			    RecommendDietEntity(R.drawable.recommend9,"계란 스크램블 100g, 사과 125g, 저지방 우유 200ml, 아몬드 6g", 317),
-			    RecommendDietEntity(R.drawable.recommend10,"파프리카 100g, 느타리 버섯볶음 100g, 삶은 양배추 100g, 닭가슴살구이 100g", 293)
+                RecommendDietEntity("recommend1.jpg","오트밀 20g, 바나나 100g, 사과 125g, 우유 200ml",345),
+                RecommendDietEntity("recommend2.jpg","현미밥 70g, 미역국 300g, 배추김치 50g, 가자미구이 50g",207),
+                RecommendDietEntity("recommend3.jpg","삶은 달걀 100g, 찐 고구마 200g, 닭가슴살 샐러드 100g",448),
+			    RecommendDietEntity("recommend4.jpg","잡곡밥 75g, 맑은 두붓국 200g, 배추김치 50g, 미역줄기 무침 50g, 장조림 50g", 274),
+			    RecommendDietEntity("recommend5.jpg","콩밥 75g, 버섯전골 250g, 나물 50g", 224),
+			    RecommendDietEntity("recommend6.jpg","바나나 100g, 씨리얼 한 줌 30g, 우유 200ml", 326),
+			    RecommendDietEntity("recommend7.png","찐 고구마 200g, 삶은 달걀 100g, 과일 요거트 샐러드 150g", 403),
+			    RecommendDietEntity("recommend8.jpg","닭가슴살 샐러드 100g, 사과 125g, 포도 100g, 요거트 70g", 293),
+			    RecommendDietEntity("recommend9.jpg","계란 스크램블 100g, 사과 125g, 저지방 우유 200ml, 아몬드 6g", 317),
+			    RecommendDietEntity("recommend10.jpg","파프리카 100g, 느타리 버섯볶음 100g, 삶은 양배추 100g, 닭가슴살구이 100g", 293)
 			    )
 
 	    private fun getRecommendWorkoutList()=arrayOf(
-			    RecommendWorkoutEntity("걷기","운동으로서의 걷기는 자연스럽고 편안하게 하되, 천천히 걷기부터 시작하여 경쾌하면서도 약간 빠르게 해야 효과가 있다.\\n 약간 빠르게 30분120칼로리",120f,R.drawable.workout1),
-			    RecommendWorkoutEntity("달리기 (조깅)","조깅은 일반적으로 시속 8km 정도의 속도로 달리는 것을 말한다. 운동 초기에는 운동시간을 짧게 하고, 점차적으로 거리와 시간을 늘리면서 걷기와 조깅을 번갈아 실시해야 한다.\n가볍게 30분 189Kcal",189f,R.drawable.workout2),
-			    RecommendWorkoutEntity("계단 오르기 (걷기)","배에 힘을 주어 허리를 곧게 편 상태를 유지한다.\n가볍게 30분 189Kcal",189f,R.drawable.workout3),
-			    RecommendWorkoutEntity("계단 오르기 (뛰기)","가볍게 조깅하듯이 계단을 뛰어 올라갔다 내려온다. 내려 오는 동작에서 방심하지 말고 끝까지 집중하여 운동한다.\n가볍게 30분 252Kcal",252f,R.drawable.workout4),
-			    RecommendWorkoutEntity("런닝머신 걷기","런닝머신은 천천히 걷기, 조깅 달리기 등 자신의 체력수준에 따라 속도를 임의로 조정할 수 있기 때문에 페이스나 기술향상은 물론, 설정된 목표에 알맞게 가장 안전하고 편안하게 운동할 수 있다.\n4.0km/h 30분 92Kcal",92f,R.drawable.workout5),
-			    RecommendWorkoutEntity("런닝머신 뛰기","런닝머신은 천천히 걷기, 조깅 달리기 등 자신의 체력수준에 따라 속도를 임의로 조정할 수 있기 때문에 페이스나 기술향상은 물론, 설정된 목표에 알맞게 가장 안전하고 편안하게 운동할 수 있다.\n5.5km/h 30분 197Kcal",197F,R.drawable.workout5),
-			    RecommendWorkoutEntity("줄넘기","양발로 밟고 섰을 때 자신의 허리와 가슴 사이까지 올 정도의 길이로 줄넘기를 맞춘다. 허리를 곧게 편 상태를 유지하며 가볍게 두 발을 모아 줄을 넘는다.\n빠르게 30분 378Kcal",378f,R.drawable.workout7),
-			    RecommendWorkoutEntity("스피닝","칼로리 소모가 큰 고강도 운동으로, 바른자세로 운동하지 않으면 허리와 무릎 등에 부상을 입을 수 있다. 페달링에 익숙해지면 페달의 저항력이나 케이던스를 높여 운동 강도를 조절할 수 있다.\n보통으로 30분 252Kcal",252f,R.drawable.workout8),
-			    RecommendWorkoutEntity("데드리프트","둔근, 대퇴 후면 근육 등 전신 근육 발달에 중요한 영향을 끼치는 운동이다. 신체의 파워를 기를 수 있고, 몸통을 둘러싸고 있는 근육들의 근력을 전반적으로 향상시킬 수 있는 운동이다.\n보통으로 30분 252Kcal",252f,R.drawable.workout10),
-			    RecommendWorkoutEntity("벤치 프레스 - 디클라인","대흉근의 아랫부분을 발달시켜 보다 완성도 높은 대흉근의 모양을 만들어준다. 벤치의 각도는 30~45도가 적당하다.\n보통으로 30분 252Kcal",252f,R.drawable.workout11),
-			    RecommendWorkoutEntity("벤치 프레스 - 인클라인","동작의 가동 범위를 최대화시켜 대흉근을 발달시키는 운동이다. 수축과 이완 시 덤벨의 균형을 잘 잡아야 하므로 균형감각을 키울 수 있다.\n보통으로 30분 221Kcal",252f,R.drawable.workout12),
-			    RecommendWorkoutEntity("레그 컬 - 라잉","대퇴후면의 슬굴곡근을 발달시키기 위한 운동이다. 스탠딩 레그 컬보다 많은 중량을 들 수 있는 것이 장점으로, 하체 근력이 약한 사람에게 필수적인 운동이다.\n보통으로 30분 221Kcal",221f,R.drawable.workout13),
-			    RecommendWorkoutEntity("런지","대표적인 다리 운동 중 하나로 허벅지와 엉덩이에 탄력을 주며 하체 근력을 강화하는 운동이다. 더 강한 운동 효과를 원한다면 덤벨이나 바벨을 이용하여 천천히 운동하는 것이 좋다.\n보통으로 30분 249Kcal",249f,R.drawable.workout14),
-			    RecommendWorkoutEntity("랫 풀 다운 - 머신","광배근을 발달시키기 위한 대표적인 운동이다. 턱걸이를 하기 어려운 초보자들에게 좋은 운동이다.\n보통으로 30분 252Kcal",252f,R.drawable.workout15),
-			    RecommendWorkoutEntity("레그 레이즈","하복부를 단련하는 대표적인 운동이다. 다리를 들어올리는 근육의 힘을 이용하여 동작하는 운동이다.\n보통으로 30분 221Kcal",221f,R.drawable.workout16),
-			    RecommendWorkoutEntity("레그 익스텐션","허벅지 전면 근육을 발달시키는 운동이다. 두 다리의 근력 수준 차이를 극복하기 위해 한 발씩 실시해도 좋은 운동이다.\n보통으로 30분 221Kcal",221f,R.drawable.workout17),
-			    RecommendWorkoutEntity("레그 프레스","대퇴사두근과 둔근을 강화시켜주는 대표적이고 필수적인 하체 운동이다. 스쿼트에 비해 허리에 가해지는 부하가 적어 비교적 무거운 무게로 운동할 수 있는 장점이 있다.\n보통으로 30분 252Kcal",252f,R.drawable.workout18),
-			    RecommendWorkoutEntity("푸시업 (팔굽혀펴기)","가장 널리 알려진 대흉근 운동이다. 안전하고 효과적으로 상체를 단련할 수 있는 운동으로 의자나 상자 위에 다리를 올려놓고 실시하면 대흉근 발달에 더욱 효과적이다.\n보통으로 30분 221Kcal",221f,R.drawable.workout19),
-			    RecommendWorkoutEntity("스쿼트","다리 근력 향상에 효과적인 운동으로 알려졌지만 실제로는 여러 근육을 자극하므로 전신운동에 가깝다. 하체 운동 중에서도 에너지 소모가 높아 체지방 감소에도 효과적이다. \n보통으로 30분 252Kcal",252f,R.drawable.workout20),
-			    RecommendWorkoutEntity("윗몸일으키키","가장 일반적으로 할 수 있는 복근 운동이다. 앉았다 누웠다를 반복하는 동작이므로 복근과 다리를 들어올리는 근육을 발달시킬 수 있다.\n보통으로 30분 189Kcal",189f,R.drawable.workout21),
-			    RecommendWorkoutEntity("컬 덤벨","상완이두근의 선명도를 높일 수 있는 운동이다. 선 자세와 앉은 자세(벤치, 짐볼)에서 운동이 가능하며, 그립을 잡는 방향에 따라 발현되는 근육이 달라진다.\n보통으로 30분 252Kcal",252f,R.drawable.workout22),
-			    RecommendWorkoutEntity("고정 자전거 (사이클 에르고미터)","속도와 저항을 조절하여 운동량을 결정할 수 있기 때문에 실외에서 타는 경우와 비교할 때보다 정확한 양으로 운동하기 좋다.\n보통으로 30분 221Kcal",221f,R.drawable.workout24),
-			    RecommendWorkoutEntity("수영","스포츠 종전신 운동으로 큰 호흡운동을 요구하기 때문에 근육이나 심폐의 발달에 좋다.\n접영 30분 347Kcal",347f,R.drawable.workout25),
-			    RecommendWorkoutEntity("자전거","자전거 운동은 발목이나 무릎에 부담을 주지 않으면서 칼로리 소비를 많이 할 수 있는 효과적인 운동이다.\n 달리기, 걷기 운동에 비하여 하체에 의존하는 비율이 높기 때문에 운동 지속시간을 길게 할 필요가 있다. \n가볍게 30분 189Kcal",189f,R.drawable.workout23)
+			    RecommendWorkoutEntity("걷기","운동으로서의 걷기는 자연스럽고 편안하게 하되, 천천히 걷기부터 시작하여 경쾌하면서도 약간 빠르게 해야 효과가 있다.\\n 약간 빠르게 30분120칼로리",120f,"workout1.jpg"),
+			    RecommendWorkoutEntity("달리기 (조깅)","조깅은 일반적으로 시속 8km 정도의 속도로 달리는 것을 말한다. 운동 초기에는 운동시간을 짧게 하고, 점차적으로 거리와 시간을 늘리면서 걷기와 조깅을 번갈아 실시해야 한다.\n가볍게 30분 189Kcal",189f,"workout2.jpg"),
+			    RecommendWorkoutEntity("계단 오르기 (걷기)","배에 힘을 주어 허리를 곧게 편 상태를 유지한다.\n가볍게 30분 189Kcal",189f,"workout3.jpg"),
+			    RecommendWorkoutEntity("계단 오르기 (뛰기)","가볍게 조깅하듯이 계단을 뛰어 올라갔다 내려온다. 내려 오는 동작에서 방심하지 말고 끝까지 집중하여 운동한다.\n가볍게 30분 252Kcal",252f,"workout4.jpg"),
+			    RecommendWorkoutEntity("런닝머신 걷기","런닝머신은 천천히 걷기, 조깅 달리기 등 자신의 체력수준에 따라 속도를 임의로 조정할 수 있기 때문에 페이스나 기술향상은 물론, 설정된 목표에 알맞게 가장 안전하고 편안하게 운동할 수 있다.\n4.0km/h 30분 92Kcal",92f,"workout5.jpg"),
+			    RecommendWorkoutEntity("런닝머신 뛰기","런닝머신은 천천히 걷기, 조깅 달리기 등 자신의 체력수준에 따라 속도를 임의로 조정할 수 있기 때문에 페이스나 기술향상은 물론, 설정된 목표에 알맞게 가장 안전하고 편안하게 운동할 수 있다.\n5.5km/h 30분 197Kcal",197F,"workout5.jpg"),
+			    RecommendWorkoutEntity("줄넘기","양발로 밟고 섰을 때 자신의 허리와 가슴 사이까지 올 정도의 길이로 줄넘기를 맞춘다. 허리를 곧게 편 상태를 유지하며 가볍게 두 발을 모아 줄을 넘는다.\n빠르게 30분 378Kcal",378f,"workout7.jpg"),
+			    RecommendWorkoutEntity("스피닝","칼로리 소모가 큰 고강도 운동으로, 바른자세로 운동하지 않으면 허리와 무릎 등에 부상을 입을 수 있다. 페달링에 익숙해지면 페달의 저항력이나 케이던스를 높여 운동 강도를 조절할 수 있다.\n보통으로 30분 252Kcal",252f,"workout8.jpg"),
+			    RecommendWorkoutEntity("데드리프트","둔근, 대퇴 후면 근육 등 전신 근육 발달에 중요한 영향을 끼치는 운동이다. 신체의 파워를 기를 수 있고, 몸통을 둘러싸고 있는 근육들의 근력을 전반적으로 향상시킬 수 있는 운동이다.\n보통으로 30분 252Kcal",252f,"workout10.jpg"),
+			    RecommendWorkoutEntity("벤치 프레스 - 디클라인","대흉근의 아랫부분을 발달시켜 보다 완성도 높은 대흉근의 모양을 만들어준다. 벤치의 각도는 30~45도가 적당하다.\n보통으로 30분 252Kcal",252f,"workout11.jpg"),
+			    RecommendWorkoutEntity("벤치 프레스 - 인클라인","동작의 가동 범위를 최대화시켜 대흉근을 발달시키는 운동이다. 수축과 이완 시 덤벨의 균형을 잘 잡아야 하므로 균형감각을 키울 수 있다.\n보통으로 30분 221Kcal",252f,"workout12.jpg"),
+			    RecommendWorkoutEntity("레그 컬 - 라잉","대퇴후면의 슬굴곡근을 발달시키기 위한 운동이다. 스탠딩 레그 컬보다 많은 중량을 들 수 있는 것이 장점으로, 하체 근력이 약한 사람에게 필수적인 운동이다.\n보통으로 30분 221Kcal",221f,"workout13.jpg"),
+			    RecommendWorkoutEntity("런지","대표적인 다리 운동 중 하나로 허벅지와 엉덩이에 탄력을 주며 하체 근력을 강화하는 운동이다. 더 강한 운동 효과를 원한다면 덤벨이나 바벨을 이용하여 천천히 운동하는 것이 좋다.\n보통으로 30분 249Kcal",249f,"workout14.jpg"),
+			    RecommendWorkoutEntity("랫 풀 다운 - 머신","광배근을 발달시키기 위한 대표적인 운동이다. 턱걸이를 하기 어려운 초보자들에게 좋은 운동이다.\n보통으로 30분 252Kcal",252f,"workout15.jpg"),
+			    RecommendWorkoutEntity("레그 레이즈","하복부를 단련하는 대표적인 운동이다. 다리를 들어올리는 근육의 힘을 이용하여 동작하는 운동이다.\n보통으로 30분 221Kcal",221f,"workout16.jpg"),
+			    RecommendWorkoutEntity("레그 익스텐션","허벅지 전면 근육을 발달시키는 운동이다. 두 다리의 근력 수준 차이를 극복하기 위해 한 발씩 실시해도 좋은 운동이다.\n보통으로 30분 221Kcal",221f,"workout17.jpg"),
+			    RecommendWorkoutEntity("레그 프레스","대퇴사두근과 둔근을 강화시켜주는 대표적이고 필수적인 하체 운동이다. 스쿼트에 비해 허리에 가해지는 부하가 적어 비교적 무거운 무게로 운동할 수 있는 장점이 있다.\n보통으로 30분 252Kcal",252f,"workout18.jpg"),
+			    RecommendWorkoutEntity("푸시업 (팔굽혀펴기)","가장 널리 알려진 대흉근 운동이다. 안전하고 효과적으로 상체를 단련할 수 있는 운동으로 의자나 상자 위에 다리를 올려놓고 실시하면 대흉근 발달에 더욱 효과적이다.\n보통으로 30분 221Kcal",221f,"workout19.jpg"),
+			    RecommendWorkoutEntity("스쿼트","다리 근력 향상에 효과적인 운동으로 알려졌지만 실제로는 여러 근육을 자극하므로 전신운동에 가깝다. 하체 운동 중에서도 에너지 소모가 높아 체지방 감소에도 효과적이다. \n보통으로 30분 252Kcal",252f,"workout20.jpg"),
+			    RecommendWorkoutEntity("윗몸일으키키","가장 일반적으로 할 수 있는 복근 운동이다. 앉았다 누웠다를 반복하는 동작이므로 복근과 다리를 들어올리는 근육을 발달시킬 수 있다.\n보통으로 30분 189Kcal",189f,"workout21.jpg"),
+			    RecommendWorkoutEntity("컬 덤벨","상완이두근의 선명도를 높일 수 있는 운동이다. 선 자세와 앉은 자세(벤치, 짐볼)에서 운동이 가능하며, 그립을 잡는 방향에 따라 발현되는 근육이 달라진다.\n보통으로 30분 252Kcal",252f,"workout22.jpg"),
+			    RecommendWorkoutEntity("고정 자전거 (사이클 에르고미터)","속도와 저항을 조절하여 운동량을 결정할 수 있기 때문에 실외에서 타는 경우와 비교할 때보다 정확한 양으로 운동하기 좋다.\n보통으로 30분 221Kcal",221f,"workout24.jpg"),
+			    RecommendWorkoutEntity("수영","스포츠 종전신 운동으로 큰 호흡운동을 요구하기 때문에 근육이나 심폐의 발달에 좋다.\n접영 30분 347Kcal",347f,"workout25.jpg"),
+			    RecommendWorkoutEntity("자전거","자전거 운동은 발목이나 무릎에 부담을 주지 않으면서 칼로리 소비를 많이 할 수 있는 효과적인 운동이다.\n 달리기, 걷기 운동에 비하여 하체에 의존하는 비율이 높기 때문에 운동 지속시간을 길게 할 필요가 있다. \n가볍게 30분 189Kcal",189f,"workout23.jpg")
 			    )
 
 	    fun getFoodList()= arrayOf(
