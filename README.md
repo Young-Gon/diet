@@ -1,12 +1,12 @@
 # 다다 - 다이어트 다이어리
 
-'다다'는 하루 하루 식단과 운동량을 기록할 수 있는 쉽고 간단한 다이어트다이어리 입니다.    
+■ '다다'는 [room](https://developer.android.com/training/data-storage/room/) 아키텍처를 기반으로 코틀린으로 작성된 안드로이드 앱입니다
+
+■ ACC-VM을 사용하여 MVVM 페턴으로 제작 하였습니다
+
+■ [livedata](https://developer.android.com/topic/libraries/architecture/livedata)를 사용하여 데이터베이스의 값이 변경 될경우 자동으로 화면이 갱신 되도록 설계 하였습니다
   
-■ 식사량, 운동량, 수분섭취량, 몸무게를 간단하게 기록하고 목표량과 달성량을 한 눈에 볼 수 있습니다.    
-  
-■ 매일 달라지는 모습을 사진을 통해 확인할 수 있습니다.    
-  
-■ 섭취 칼로리, 소비 칼로리, 몸무게 및 BMI 지수 변화를 차트를 통해 확인 할 수 있습니다.
+■ 두개의 테이블값이 변경된 후 화면 갱신이 필요할 경우에는 [RxJava](https://github.com/ReactiveX/RxJava)를 사용하여 변경된 값을 병합하여 화면을 갱신 하도록 구현 하였습니다
 
 ## 스크린샷
 
